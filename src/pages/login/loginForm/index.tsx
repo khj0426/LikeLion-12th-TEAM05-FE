@@ -1,7 +1,7 @@
 import Logo from '../../../../public/login.svg?react';
 import { z, ZodError } from 'zod';
 import { ChangeEvent, useState } from 'react';
-import { LoginBanner } from '@/pages/login/loginButton';
+import { LoginBanner } from '../loginButton';
 import { Button, Input } from '@/_components';
 
 interface LoginFormProps {
@@ -99,7 +99,7 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
               }
             }}
             variant={'primary'}
-            size="md"
+            size="xs"
           >
             로그인
           </Button>

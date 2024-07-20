@@ -10,7 +10,9 @@ export const NavBar = () => {
       <Navbar.Brand className="flex items-center gap-3">
         <Walk width={50} height={50} />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-          WalkMate
+          <Link to="/" className="text-white-200 flex items-center font-bold">
+            WalkMate
+          </Link>
         </span>
       </Navbar.Brand>
 

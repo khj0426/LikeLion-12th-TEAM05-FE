@@ -1,13 +1,12 @@
-import { ReactNode, StrictMode, useContext } from 'react';
-import ReactDOM from 'react-dom/client';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { FluentProvider } from '@fluentui/react-components';
-import { customLightTheme, customDarkTheme } from '@/_types';
+import ReactDOM from 'react-dom/client';
+import '../index.css';
 
+import { Flowbite } from 'flowbite-react';
 import { routeTree } from './routeTree.gen';
+import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { StrictMode } from 'react';
 
-import { ThemeContext, ThemeProvider } from '@/_context/themeContext';
 const router = createRouter({ routeTree });
 
 declare module '@tanstack/react-router' {
@@ -15,17 +14,6 @@ declare module '@tanstack/react-router' {
     router: typeof router;
   }
 }
-
-const FluentProviderTheme = ({ children }: { children: ReactNode }) => {
-  const { theme } = useContext(ThemeContext);
-  return (
-    <FluentProvider
-      theme={theme === 'light' ? customLightTheme : customDarkTheme}
-    >
-      {children}
-    </FluentProvider>
-  );
-};
 
 const rootElement = document.getElementById('app')!;
 if (!rootElement.innerHTML) {
@@ -45,13 +33,11 @@ if (!rootElement.innerHTML) {
 
   root.render(
     <StrictMode>
-      <ThemeProvider>
+      <Flowbite>
         <QueryClientProvider client={queryClient}>
-          <FluentProviderTheme>
-            <RouterProvider router={router} />
-          </FluentProviderTheme>
+          <RouterProvider router={router} />
         </QueryClientProvider>
-      </ThemeProvider>
+      </Flowbite>
     </StrictMode>
   );
 }
