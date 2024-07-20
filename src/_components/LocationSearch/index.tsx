@@ -1,7 +1,9 @@
+import NoData from '../../../public/noData.svg?react';
 import { SetStateAction, useEffect, useRef, useState } from 'react';
 import { Input } from '@/_components/input';
 import { useGeolocation } from '@/_hooks';
 import { createMap } from '@/_utils';
+import { Button } from '@/_components/button';
 
 declare global {
   interface Window {
@@ -135,24 +137,43 @@ export const LocationSearch = ({
         />
 
         <div
-          className="bg-WHITE min-h-[350px]
-          max-h-[350]x overflow-scroll min-w-[320px] text-LIGHT_STATE"
+          className="bg-WHITE min-h-[200px]
+          max-h-[350px] overflow-scroll min-w-[320px] text-LIGHT_STATE"
           style={{ marginBottom: '5px' }}
         >
-          {Array.isArray(places) && places.length > 0 ? (
-            places.map((eachPlace) => (
-              <div
-                key={eachPlace.id}
-                style={{ marginBottom: '5px' }}
-                className="text-LIGHT_SLATE"
-              >
-                <strong>{eachPlace.place_name}</strong>
-                <p>{eachPlace.address_name}</p>
-              </div>
-            ))
-          ) : (
-            <div>검색 결과가 없습니다.</div>
-          )}
+          <div>
+            <p className="font-bold  flex justify-center text-2xl bg-[#EFEFFD] dark:bg-ONYX text-[#4B4DED] dark:text-WHITE">
+              산책로 추가/제거
+            </p>
+            {Array.isArray(places) && places.length > 0 ? (
+              places.map((eachPlace) => (
+                <div
+                  key={eachPlace.id}
+                  style={{ marginBottom: '5px' }}
+                  className="text-LIGHT_SLATE"
+                >
+                  <div className="flex align-center justify-between">
+                    <div className="max-w-[250px] overflow-hidden whitespace-nowrap text-ellipsis">
+                      <strong>{eachPlace.place_name}</strong>
+                      <p>{eachPlace.address_name}</p>
+                    </div>
+
+                    <Button variant={'register'} size="xs">
+                      선택
+                    </Button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <NoData
+                style={{
+                  marginTop: '25px',
+                }}
+                width={250}
+                height={270}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
