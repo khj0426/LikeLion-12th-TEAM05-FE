@@ -10,7 +10,12 @@ interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
   as?: 'a' | 'button';
   icon?: ReactNode;
   shape?: 'circular' | 'square' | 'rounded';
+<<<<<<< Updated upstream
   size?: 'small' | 'medium' | 'large';
+=======
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  block?: boolean;
+>>>>>>> Stashed changes
 }
 
 const useOverrides = makeStyles({
@@ -25,11 +30,31 @@ const useOverrides = makeStyles({
 export const Button = ({
   size = 'medium',
   shape = 'rounded',
+<<<<<<< Updated upstream
   icon = null,
   as,
   ...rest
 }: ButtonProps) => {
   const overrides = useOverrides();
+=======
+  variant = 'secondary',
+  weight = 'medium',
+  block = false,
+  as,
+  ...rest
+}: ButtonProps) => {
+  const className = cn(
+    buttonVariants({
+      variant,
+      weight,
+      size,
+      shape,
+    }),
+    block ? 'w-full' : 'inline-flex',
+    rest.className
+  );
+
+>>>>>>> Stashed changes
   return (
     <FluentUiButton
       size={size}

@@ -1,5 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
+import { CurationCreate } from '@/pages/curationCreate';
 
 export const Route = createFileRoute('/curation-create')({
-  component: () => <div>Hello /curation-create!</div>
-})
+  component: () => <CurationCreate />,
+});

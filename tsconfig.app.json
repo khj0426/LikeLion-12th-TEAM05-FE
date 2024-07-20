@@ -10,7 +10,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types":["vite-plugin-svgr/client"],
+    "types": ["vite-plugin-svgr/client"],
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -28,5 +28,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "**/*.ts", "**/*.tsx","svg.d.ts"]
+  "include": ["src", "**/*.ts", "**/*.tsx", "svg.d.ts", "kakao.d.ts"]
 }
