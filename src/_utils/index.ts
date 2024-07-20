@@ -1,4 +1,3 @@
-
 import type { ClassValue } from 'clsx';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -18,7 +17,6 @@ export function createMap({ pos, container }: CreateMapProps) {
 
   const $mapOptions = {
     center: new window.kakao.maps.LatLng($latitude, $longitude),
-    level: 3,
     draggable: true,
     scrollwheel: true,
     keyboardShortcuts: true,

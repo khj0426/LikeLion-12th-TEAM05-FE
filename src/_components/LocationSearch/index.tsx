@@ -4,6 +4,7 @@ import { Input } from '@/_components/input';
 import { useGeolocation } from '@/_hooks';
 import { createMap } from '@/_utils';
 import { Button } from '@/_components/button';
+import { Pagination } from 'flowbite-react';
 
 declare global {
   interface Window {
@@ -31,6 +32,18 @@ interface PlaceData {
   y: number;
 }
 
+interface Pagination {
+  current: number;
+  first: number;
+  gotoFirst: () => void;
+  gotoLast: () => void;
+  gotoPage: (_nextPage: number) => void;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  perPage: number;
+  totalCount: number;
+}
+
 export const LocationSearch = ({
   onSelectLocation,
   lat = 37.566826,
@@ -42,6 +55,7 @@ export const LocationSearch = ({
   const [map, setMap] = useState<any>();
   const [markers, setMarkers] = useState<any[]>([]);
   const locationMapRef = useRef<HTMLDivElement | null>(null);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
 
   useEffect(() => {
     if (locationMapRef.current) {
@@ -68,11 +82,12 @@ export const LocationSearch = ({
       return;
     }
     const ps = new window.kakao.maps.services.Places();
-    ps.keywordSearch(query, (data: PlaceData[]) => {
+    ps.keywordSearch(query, (data: PlaceData[], _: any, pagination: any) => {
       markers.forEach((marker) => {
         marker.setMap(null);
       });
       setPlaces(data);
+      setPagination(pagination);
 
       const newMarkers: SetStateAction<any[]> = [];
       const bounds = new window.kakao.maps.LatLngBounds();
@@ -116,6 +131,20 @@ export const LocationSearch = ({
     return marker;
   };
 
+  const handleSelectLocation = (location: PlaceData) => {
+    const position = new window.kakao.maps.LatLng(location.y, location.x);
+    markers.forEach((marker) => {
+      marker.setMap(null);
+    });
+    const marker = new window.kakao.maps.Marker({
+      position,
+    });
+    map.setLevel(1);
+
+    marker.setMap(map);
+
+    map.setCenter(position);
+  };
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
@@ -142,11 +171,11 @@ export const LocationSearch = ({
           style={{ marginBottom: '5px' }}
         >
           <div>
-            <p className="font-bold  flex justify-center text-2xl bg-[#EFEFFD] dark:bg-ONYX text-[#4B4DED] dark:text-WHITE">
+            <p className="font-bold  flex justify-center text-2xl bg-[#EFEFFD] dark:bg-ONYX text-[#4B4DED] dark:text-WHITE p-2">
               산책로 추가/제거
             </p>
             {Array.isArray(places) && places.length > 0 ? (
-              places.map((eachPlace) => (
+              places.map((eachPlace, index) => (
                 <div
                   key={eachPlace.id}
                   style={{ marginBottom: '5px' }}
@@ -154,11 +183,17 @@ export const LocationSearch = ({
                 >
                   <div className="flex align-center justify-between">
                     <div className="max-w-[250px] overflow-hidden whitespace-nowrap text-ellipsis">
-                      <strong>{eachPlace.place_name}</strong>
+                      <strong>{`[${index + 1}] ${
+                        eachPlace.place_name
+                      }`}</strong>
                       <p>{eachPlace.address_name}</p>
                     </div>
 
-                    <Button variant={'register'} size="xs">
+                    <Button
+                      variant={'register'}
+                      size="xs"
+                      onClick={() => handleSelectLocation(eachPlace)}
+                    >
                       선택
                     </Button>
                   </div>
@@ -173,6 +208,16 @@ export const LocationSearch = ({
                 height={270}
               />
             )}
+          </div>
+
+          <div className="flex overflow-x-auto sm:justify-center">
+            <Pagination
+              layout="navigation"
+              currentPage={pagination?.current ?? 1}
+              color="#4B4DED"
+              totalPages={45}
+              onPageChange={(page) => pagination?.gotoPage(page)}
+            ></Pagination>
           </div>
         </div>
       </div>
