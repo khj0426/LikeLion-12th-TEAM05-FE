@@ -1,5 +1,4 @@
-<<<<<<< Updated upstream
-=======
+
 import type { ClassValue } from 'clsx';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -27,4 +26,3 @@ export function createMap({ pos, container }: CreateMapProps) {
 
   return new window.kakao.maps.Map(container, $mapOptions);
 }
->>>>>>> Stashed changes
