@@ -45,15 +45,21 @@ interface Pagination {
   totalCount: number;
 }
 
+interface Location {
+  name: string;
+  address: string;
+  description: string;
+}
+
 export const LocationSearch = ({
   onSelectLocation,
   lat = 37.566826,
   lng = 126.9786567,
 }: LocationSearchProps) => {
+  const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
   const { location } = useGeolocation(); // location 추가
   const [places, setPlaces] = useState<PlaceData[]>([]);
   const [query, setQuery] = useState('');
-  const [content, setContet] = useState('');
   const [map, setMap] = useState<any>();
   const [markers, setMarkers] = useState<any[]>([]);
   const locationMapRef = useRef<HTMLDivElement | null>(null);
@@ -221,7 +227,16 @@ export const LocationSearch = ({
                           '장소 설명',
                           '',
                           '장소에 대해 설명을 적어주세요'
-                        );
+                        ).then((val) => {
+                          setSelectedLocations([
+                            ...selectedLocations,
+                            {
+                              name: eachPlace.place_name,
+                              description: val,
+                              address: eachPlace.road_address_name,
+                            },
+                          ]);
+                        });
                       }}
                     >
                       선택
