@@ -7,7 +7,7 @@ import { Button } from '@/_components';
 
 export const Route = createFileRoute('/')({
   component: () => (
-    <div className="text-WHITE h-56 sm:h-64 xl:h-80 2xl:h-96">
+    <div className="text-WHITE h-56 sm:h-64 xl:h-80 2xl:h-96 bg-PRIMARY dark:bg-[#0E0E2C]">
       <Carousel className="my-[50px] text-WHITE bg-PRIMARY w-[80%] mx-auto">
         <MainBanner />
         <img

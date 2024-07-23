@@ -39,28 +39,20 @@ font-face {
     @apply box-border font-Pretendard;
   }
 
-  body,
-  html {
-    @apply font-Pretendard bg-[#4B4DED] text-[#FAFCFE];
-    min-height: 100vh;
-  }
-
   a {
     @apply no-underline;
   }
 
   @media (prefers-color-scheme: dark) {
     body {
-      @apply font-Pretendard bg-[#0E0E2C] text-[#FAFCFE];
-      min-height: 100vh;
+      @apply font-Pretendard bg-[#0E0E2C] text-[#FAFCFE] min-h-[100vh] h-auto;
     }
   }
 
   @media ((prefers-color-scheme: light)) {
     body,
     html {
-      @apply font-Pretendard bg-[#4B4DED] text-[#FAFCFE];
-      min-height: 100vh;
+      @apply font-Pretendard bg-[#4B4DED] text-[#FAFCFE] min-h-[100vh] h-auto;
     }
   }
 }
