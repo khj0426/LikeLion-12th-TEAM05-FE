@@ -1,9 +1,10 @@
 import NoData from '../../../public/noData.svg?react';
 import { SetStateAction, useEffect, useRef, useState } from 'react';
-import { Input } from '@/_components/input';
 import { useGeolocation } from '@/_hooks';
 import { createMap } from '@/_utils';
 import { Button } from '@/_components/button';
+import { Input } from '@/_components/input';
+import { createSwalInput } from '@/_utils';
 import { Pagination } from 'flowbite-react';
 
 declare global {
@@ -52,6 +53,7 @@ export const LocationSearch = ({
   const { location } = useGeolocation(); // location 추가
   const [places, setPlaces] = useState<PlaceData[]>([]);
   const [query, setQuery] = useState('');
+  const [content, setContet] = useState('');
   const [map, setMap] = useState<any>();
   const [markers, setMarkers] = useState<any[]>([]);
   const locationMapRef = useRef<HTMLDivElement | null>(null);
@@ -121,7 +123,8 @@ export const LocationSearch = ({
     marker.setMap(map);
 
     const infoWindow = new window.kakao.maps.InfoWindow({
-      content: `<div style="padding:5px;">${title}</div>`,
+      content: `<div style="padding:5px;color:'black';">${title}</div>`,
+      removable: true,
     });
 
     window.kakao.maps.event.addListener(marker, 'click', () => {
@@ -132,6 +135,7 @@ export const LocationSearch = ({
   };
 
   const handleSelectLocation = (location: PlaceData) => {
+    setMarkers([]);
     const position = new window.kakao.maps.LatLng(location.y, location.x);
     markers.forEach((marker) => {
       marker.setMap(null);
@@ -139,10 +143,28 @@ export const LocationSearch = ({
     const marker = new window.kakao.maps.Marker({
       position,
     });
+
+    const infoWindow = new window.kakao.maps.InfoWindow({
+      content: `
+        <div style="
+          display:flex;
+          flex-direction:column;
+          color: rgba(0, 0, 0, 0.7);
+          padding: 10px;
+          border-radius: 5px;
+          font-size: 14px;
+          text-align: center;">
+          ${location.place_name}
+          <p>${location.category_name}</p>
+        </div>
+      `,
+      position,
+      removable: true,
+    });
+
+    infoWindow.open(map, marker);
     map.setLevel(1);
-
     marker.setMap(map);
-
     map.setCenter(position);
   };
   return (
@@ -150,6 +172,7 @@ export const LocationSearch = ({
       style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
     >
       <Input
+        placeholder="장소는 최대 3개까지 선택 가능합니다.구체적인 장소를 입력해주세요: 예)일산호수공원"
         onChange={(e) => {
           setQuery(e.target.value);
         }}
@@ -192,7 +215,14 @@ export const LocationSearch = ({
                     <Button
                       variant={'register'}
                       size="xs"
-                      onClick={() => handleSelectLocation(eachPlace)}
+                      onClick={() => {
+                        handleSelectLocation(eachPlace);
+                        createSwalInput(
+                          '장소 설명',
+                          '',
+                          '장소에 대해 설명을 적어주세요'
+                        );
+                      }}
                     >
                       선택
                     </Button>
