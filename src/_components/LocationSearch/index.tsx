@@ -7,6 +7,12 @@ import { Input } from '@/_components/input';
 import { Pagination } from 'flowbite-react';
 import Swal from 'sweetalert2';
 
+interface Location {
+  name: string;
+  address: string;
+  description: string;
+}
+
 declare global {
   interface Window {
     kakao: any;
@@ -14,7 +20,7 @@ declare global {
 }
 
 interface LocationSearchProps {
-  onSelectLocation: () => void;
+  onSelectLocation: (locations: Location[]) => void;
   lat?: number;
   lng?: number;
 }
@@ -43,12 +49,6 @@ interface Pagination {
   hasPrevPage: boolean;
   perPage: number;
   totalCount: number;
-}
-
-interface Location {
-  name: string;
-  address: string;
-  description: string;
 }
 
 export const LocationSearch = ({
@@ -136,12 +136,6 @@ export const LocationSearch = ({
   const handleSelectLocation = (location: PlaceData) => {
     setMarkers([]);
     const position = new window.kakao.maps.LatLng(location.y, location.x);
-    markers.forEach((marker) => {
-      marker.setMap(null);
-    });
-    const marker = new window.kakao.maps.Marker({
-      position,
-    });
     const infoWindow = new window.kakao.maps.InfoWindow({
       content: `
         <div style="
@@ -159,6 +153,14 @@ export const LocationSearch = ({
       position,
       removable: true,
     });
+
+    markers.forEach((marker) => {
+      marker.setMap(null);
+    });
+    const marker = new window.kakao.maps.Marker({
+      position,
+    });
+
     window.kakao.maps.event.addListener(marker, 'click', function () {
       Swal.fire({
         title: '장소를 제거하시겠습니까?',
@@ -271,7 +273,84 @@ export const LocationSearch = ({
             ></Pagination>
           </div>
         </div>
+        <div
+          className="bg-WHITE min-h-[200px] 
+          max-h-[350px] overflow-scroll min-w-[300px] text-LIGHT_STATE"
+          style={{ marginBottom: '5px' }}
+        >
+          <div className="">
+            <p className="font-bold  flex justify-center text-2xl bg-[#EFEFFD] dark:bg-ONYX text-[#4B4DED] dark:text-WHITE p-2">
+              내가 고른 산책로
+            </p>
+            {selectedLocations.map((location, index) => (
+              <div
+                key={location.name}
+                style={{ marginBottom: '5px' }}
+                className="text-LIGHT_SLATE border-b border-[#8C8CA1]"
+              >
+                <div className="flex align-center justify-between">
+                  <div className="max-w-[250px] overflow-hidden whitespace-nowrap text-ellipsis">
+                    <strong>{`[${index + 1}] ${location.name}`}</strong>
+                    <p>{location.address}</p>
+                  </div>
+
+                  <Button
+                    variant={'register'}
+                    onClick={() =>
+                      setSelectedLocations(
+                        selectedLocations.filter(
+                          (l) => location.name !== l.name
+                        )
+                      )
+                    }
+                  >
+                    제거
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+
+      <Button
+        onClick={() => {
+          if (selectedLocations.length < 1) {
+            Swal.fire({
+              icon: 'error',
+              title: '장소를 1개 이상 선택해주세요',
+            });
+            return;
+          }
+
+          const parseSelectedLocations = selectedLocations
+            .filter((location) => location.name)
+            .map((location) => location.name)
+            .join(', ');
+
+          Swal.fire({
+            title: '선택된 장소',
+            text: parseSelectedLocations,
+            showCancelButton: true,
+            confirmButtonText: '큐레이션 생성하기',
+            cancelButtonText: '취소하기',
+          }).then((res) => {
+            if (res.isConfirmed) {
+              onSelectLocation(selectedLocations);
+            }
+          });
+        }}
+        size="md"
+        shape="circular"
+        variant={'primary'}
+        style={{
+          position: 'absolute',
+          bottom: '1rem',
+          right: '1rem',
+        }}
+      >
+        +
+      </Button>
     </div>
   );
 };

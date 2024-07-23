@@ -85,24 +85,25 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
             </span>
           </p>
 
-          <Button
-            block
-            onClick={() => {
-              try {
-                const a = loginSchema.parse(formData);
-                setError(null);
-                onSubmit(a); // 폼 제출 함수 호출
-              } catch (e) {
-                if (e instanceof ZodError) {
-                  setError(e);
+          <div className="flex justify-center">
+            <Button
+              onClick={() => {
+                try {
+                  const a = loginSchema.parse(formData);
+                  setError(null);
+                  onSubmit(a); // 폼 제출 함수 호출
+                } catch (e) {
+                  if (e instanceof ZodError) {
+                    setError(e);
+                  }
                 }
-              }
-            }}
-            variant={'primary'}
-            size="xs"
-          >
-            로그인
-          </Button>
+              }}
+              variant={'primary'}
+              size="xs"
+            >
+              로그인
+            </Button>
+          </div>
           <LoginBanner />
         </div>
       </div>

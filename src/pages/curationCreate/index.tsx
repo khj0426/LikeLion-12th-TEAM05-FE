@@ -1,6 +1,10 @@
-import { useGeolocation } from '@/_hooks/';
 import { LocationSearch } from '@/_components/LocationSearch';
-
 export const CurationCreate = () => {
-  return <LocationSearch onSelectLocation={() => {}} />;
+  return (
+    <main className="relative">
+      <LocationSearch
+        onSelectLocation={(locations) => console.log(locations)}
+      />
+    </main>
+  );
 };

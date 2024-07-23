@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as SigninImport } from './routes/signin'
 import { Route as MypageImport } from './routes/mypage'
 import { Route as LoginImport } from './routes/login'
+import { Route as CurationSelectImport } from './routes/curation-select'
 import { Route as CurationMapsImport } from './routes/curation-maps'
 import { Route as CurationCreateImport } from './routes/curation-create'
 import { Route as IndexImport } from './routes/index'
@@ -33,6 +34,11 @@ const MypageRoute = MypageImport.update({
 
 const LoginRoute = LoginImport.update({
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CurationSelectRoute = CurationSelectImport.update({
+  path: '/curation-select',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,6 +87,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CurationMapsImport
       parentRoute: typeof rootRoute
     }
+    '/curation-select': {
+      id: '/curation-select'
+      path: '/curation-select'
+      fullPath: '/curation-select'
+      preLoaderRoute: typeof CurationSelectImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -118,6 +131,7 @@ export const routeTree = rootRoute.addChildren({
   IndexRoute,
   CurationCreateRoute,
   CurationMapsRoute: CurationMapsRoute.addChildren({ CurationMapsIdRoute }),
+  CurationSelectRoute,
   LoginRoute,
   MypageRoute,
   SigninRoute,
@@ -134,6 +148,7 @@ export const routeTree = rootRoute.addChildren({
         "/",
         "/curation-create",
         "/curation-maps",
+        "/curation-select",
         "/login",
         "/mypage",
         "/signin"
@@ -150,6 +165,9 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/curation-maps/$id"
       ]
+    },
+    "/curation-select": {
+      "filePath": "curation-select.tsx"
     },
     "/login": {
       "filePath": "login.tsx"
