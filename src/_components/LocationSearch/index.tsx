@@ -1,11 +1,11 @@
 import NoData from '../../../public/noData.svg?react';
 import { SetStateAction, useEffect, useRef, useState } from 'react';
 import { useGeolocation } from '@/_hooks';
-import { createMap } from '@/_utils';
+import { createMap, createSwalInput } from '@/_utils';
 import { Button } from '@/_components/button';
 import { Input } from '@/_components/input';
-import { createSwalInput } from '@/_utils';
 import { Pagination } from 'flowbite-react';
+import Swal from 'sweetalert2';
 
 declare global {
   interface Window {
@@ -83,12 +83,14 @@ export const LocationSearch = ({
       });
       setMap(newKakaoMap);
     }
-  }, [locationMapRef, lat, lng, location]);
+  }, []);
 
   useEffect(() => {
     if (!map) {
       return;
     }
+
+    setMarkers([]);
     const ps = new window.kakao.maps.services.Places();
     ps.keywordSearch(query, (data: PlaceData[], _: any, pagination: any) => {
       markers.forEach((marker) => {
@@ -110,7 +112,7 @@ export const LocationSearch = ({
       setMarkers(newMarkers);
       map.setBounds(bounds);
     });
-  }, [query, map]);
+  }, [query]);
 
   const addMarker = (position: any, title: string, index: number) => {
     const marker = new window.kakao.maps.Marker({
@@ -128,15 +130,6 @@ export const LocationSearch = ({
 
     marker.setMap(map);
 
-    const infoWindow = new window.kakao.maps.InfoWindow({
-      content: `<div style="padding:5px;color:'black';">${title}</div>`,
-      removable: true,
-    });
-
-    window.kakao.maps.event.addListener(marker, 'click', () => {
-      infoWindow.open(map, marker);
-    });
-
     return marker;
   };
 
@@ -149,7 +142,6 @@ export const LocationSearch = ({
     const marker = new window.kakao.maps.Marker({
       position,
     });
-
     const infoWindow = new window.kakao.maps.InfoWindow({
       content: `
         <div style="
@@ -166,6 +158,20 @@ export const LocationSearch = ({
       `,
       position,
       removable: true,
+    });
+    window.kakao.maps.event.addListener(marker, 'click', function () {
+      Swal.fire({
+        title: '장소를 제거하시겠습니까?',
+        icon: 'question',
+      }).then(() => {
+        marker.setMap(null);
+        infoWindow.close();
+        setSelectedLocations(
+          selectedLocations.filter(
+            (selectedLocation) => selectedLocation.name !== location.place_name
+          )
+        );
+      });
     });
 
     infoWindow.open(map, marker);
@@ -199,7 +205,7 @@ export const LocationSearch = ({
           max-h-[350px] overflow-scroll min-w-[320px] text-LIGHT_STATE"
           style={{ marginBottom: '5px' }}
         >
-          <div>
+          <div className="">
             <p className="font-bold  flex justify-center text-2xl bg-[#EFEFFD] dark:bg-ONYX text-[#4B4DED] dark:text-WHITE p-2">
               산책로 추가/제거
             </p>
@@ -208,7 +214,7 @@ export const LocationSearch = ({
                 <div
                   key={eachPlace.id}
                   style={{ marginBottom: '5px' }}
-                  className="text-LIGHT_SLATE"
+                  className="text-LIGHT_SLATE border-b border-[#8C8CA1]"
                 >
                   <div className="flex align-center justify-between">
                     <div className="max-w-[250px] overflow-hidden whitespace-nowrap text-ellipsis">

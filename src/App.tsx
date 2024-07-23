@@ -32,12 +32,10 @@ if (!rootElement.innerHTML) {
   });
 
   root.render(
-    <StrictMode>
-      <Flowbite>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </Flowbite>
-    </StrictMode>
+    <Flowbite>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </Flowbite>
   );
 }
