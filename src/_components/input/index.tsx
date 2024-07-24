@@ -1,6 +1,6 @@
 import { cva, VariantProps } from 'class-variance-authority';
 import { Label } from 'flowbite-react';
-import { ComponentPropsWithoutRef, ReactNode } from 'react';
+import { ComponentPropsWithoutRef, ReactNode, forwardRef } from 'react';
 
 interface InputProps
   extends ComponentPropsWithoutRef<'input'>,
@@ -30,15 +30,18 @@ const inputVariants = cva('text-sm transition-colors duration-300 w-[300px]', {
   },
 });
 
-export const Input = (props: InputProps) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   return (
     <div className="m-6">
       {props.id && <Label htmlFor={props.id}></Label>}
       <input
         type="text"
+        ref={ref}
         {...props}
         className={inputVariants({ variant: props.variant })}
       />
     </div>
   );
-};
+});
+
+Input.displayName = 'Input';

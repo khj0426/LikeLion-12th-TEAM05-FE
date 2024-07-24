@@ -1,7 +1,7 @@
 import MainBannerSecond from '../../public/mainbanner_2.svg?react';
 import MainBanner from '../../public/mainbanner.svg?react';
 
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { Card, Carousel } from 'flowbite-react';
 
 import { PopluarCurations } from '@/pages/landing';
@@ -73,7 +73,7 @@ export const Route = createFileRoute('/')({
           <MainBannerSecond />
           <div className="mt-4 flex gap-[25px]">
             <Button variant={'primary'} shape="rounded" size="xl">
-              큐레이션 지도 보러 가기
+              <Link to="/curation-maps">큐레이션 지도 보러 가기</Link>
             </Button>
             <Button variant={'secondary'} shape="rounded" size="xl">
               내 주변 지도 보러 가기
