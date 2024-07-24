@@ -4,11 +4,13 @@ import { ChangeEvent, useState } from 'react';
 import { Button, Input } from '@/_components';
 import { loginSchema } from '@/pages/login/loginForm';
 
+import { useSignIn } from '@/_hooks/mutation';
 interface LoginFormProps {
   onSubmit: (data: z.infer<typeof loginSchema>) => void;
 }
 
-export const SignInForm = ({ onSubmit }: LoginFormProps) => {
+export const SignInForm = () => {
+  const { mutate } = useSignIn();
   const [formData, setFormData] = useState<z.infer<typeof loginSchema>>({
     name: '',
     email: '',
@@ -78,7 +80,11 @@ export const SignInForm = ({ onSubmit }: LoginFormProps) => {
                 try {
                   const a = loginSchema.parse(formData);
                   setError(null);
-                  onSubmit(a); // 폼 제출 함수 호출
+                  mutate({
+                    name: formData.name,
+                    password: formData.password,
+                    email: formData.email,
+                  });
                 } catch (e) {
                   if (e instanceof ZodError) {
                     setError(e);

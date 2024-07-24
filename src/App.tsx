@@ -1,4 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import ReactDOM from 'react-dom/client';
 import '../index.css';
 
@@ -18,6 +22,9 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
 
   const queryClient = new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error) => console.error(error),
+    }),
     defaultOptions: {
       queries: {
         suspense: true,
