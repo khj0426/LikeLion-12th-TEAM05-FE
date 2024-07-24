@@ -19,7 +19,7 @@ export const postSignIn = async ({
       role,
       password,
     });
-    return response;
+    return response.data;
   } catch (e) {
     if (e instanceof AxiosError) {
       throw e;

@@ -1,19 +1,23 @@
 import { useMutation } from '@tanstack/react-query';
 import { components } from '../../../../schema';
-import { AxiosError } from 'axios';
 import { axiosClient } from '@/services';
 
 type APIRequest = components['schemas']['UserSignInReqDto'];
 type APIResponse = components['schemas']['UserSignInResDto'];
 
+export const postLogin = async ({ email, password }: APIRequest) => {
+  try {
+    const response = await axiosClient.post<APIResponse>('/sign-in', {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
+};
 export const useLogin = () => {
-  return useMutation<APIResponse, AxiosError, APIRequest>(
-    async (requestData) => {
-      const response = await axiosClient.post<APIResponse>(
-        '/sign-in',
-        requestData
-      );
-      return response.data;
-    }
-  );
+  return useMutation({
+    mutationFn: postLogin,
+  });
 };

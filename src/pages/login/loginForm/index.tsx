@@ -3,6 +3,7 @@ import { z, ZodError } from 'zod';
 import { ChangeEvent, useState } from 'react';
 import { LoginBanner } from '../loginButton';
 import { Button, Input } from '@/_components';
+import { useLogin } from '@/_hooks/mutation';
 
 interface LoginFormProps {
   onSubmit: (data: z.infer<typeof loginSchema>) => void;
@@ -22,6 +23,7 @@ export const loginSchema = z.object({
 });
 
 export const LoginForm = ({ onSubmit }: LoginFormProps) => {
+  const { mutate } = useLogin();
   const [formData, setFormData] = useState<z.infer<typeof loginSchema>>({
     name: '',
     email: '',
@@ -92,6 +94,15 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
                   const a = loginSchema.parse(formData);
                   setError(null);
                   onSubmit(a); // 폼 제출 함수 호출
+                  mutate(
+                    {
+                      email: formData.email,
+                      password: formData.password,
+                    },
+                    {
+                      onSuccess: (data) => console.log(data),
+                    }
+                  );
                 } catch (e) {
                   if (e instanceof ZodError) {
                     setError(e);
