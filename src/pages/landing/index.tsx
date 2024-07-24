@@ -6,7 +6,7 @@ export const PopluarCurations = () => {
 
   return (
     <div className="flex  gap-[15px]">
-      {data?.data?.curations?.map((curation) => (
+      {data?.curations?.map((curation) => (
         <Card className="max-w-sm cursor-pointer" key={curation.id}>
           <Link to={`/curation-maps/${curation.id}`}>
             <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">

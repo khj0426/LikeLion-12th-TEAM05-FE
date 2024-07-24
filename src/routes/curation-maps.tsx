@@ -1,6 +1,27 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { CurationMap } from '@/pages/curationMap';
+import { ErrorBoundary } from 'react-error-boundary';
 
+import { Suspense } from 'react';
+import { Alert, Spinner } from 'flowbite-react';
 export const Route = createFileRoute('/curation-maps')({
-  component: () => <CurationMap />,
+  component: () => {
+    return (
+      <ErrorBoundary
+        fallback={
+          <Alert color="failure">
+            <span className="font-medium">서비스를 이용할 수 없습니다.</span> 
+          </Alert>
+        }
+      >
+        <Suspense
+          fallback={
+            <Spinner aria-label="Extra large spinner example" size="xl" />
+          }
+        >
+          <CurationMap></CurationMap>
+        </Suspense>
+      </ErrorBoundary>
+    );
+  },
 });

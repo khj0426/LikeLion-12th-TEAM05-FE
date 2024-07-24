@@ -4,9 +4,11 @@ import { axiosClient } from '@/services';
 
 type APIResponse =
   components['schemas']['ApiResponseTemplateCurationListResDto'];
+
+type Qurations = Pick<APIResponse, 'data'>['data'];
 export const getPopluarCuration = async () => {
   try {
-    const response = await axiosClient.get<Pick<APIResponse, 'data'>>(
+    const response = await axiosClient.get<Exclude<Qurations, 'data'>>(
       '/curation/popular'
     );
     return response.data;
