@@ -13,6 +13,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * 인증된 사용자가 큐레이션에 좋아요
+         * @description 인증된 사용자가 큐레이션에 좋아요를 합니다.
+         */
         post: operations["likeSave"];
         delete?: never;
         options?: never;
@@ -29,6 +33,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * 회원가입
+         * @description 자체 회원가입
+         */
         post: operations["userSignUp"];
         delete?: never;
         options?: never;
@@ -45,6 +53,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * 인증된 사용자가 위치 생성
+         * @description 인증된 사용자가 위치를 생성합니다.
+         */
         post: operations["locationSave"];
         delete?: never;
         options?: never;
@@ -59,8 +71,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * 모든 사용자가 큐레이션 6개씩 조회
+         * @description 모든 사용자가 큐레이션을 6개씩 조회합니다.
+         */
         get: operations["curationFindAll"];
         put?: never;
+        /**
+         * 인증된 사용자가 큐레이션 생성
+         * @description 인증된 사용자가 큐레이션을 생성합니다.
+         */
         post: operations["curationSave"];
         delete?: never;
         options?: never;
@@ -78,9 +98,17 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /**
+         * 인증된 사용자가 위치 삭제.
+         * @description 인증된 사용자가 위치를 삭제합니다.
+         */
         delete: operations["locationDelete"];
         options?: never;
         head?: never;
+        /**
+         * 인증된 사용자가 위치 수정
+         * @description 인증된 사용자가 위치를 수정합니다.
+         */
         patch: operations["locationUpdate"];
         trace?: never;
     };
@@ -94,9 +122,17 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /**
+         * 인증된 사용자가 큐레이션 삭제
+         * @description 인증된 사용자가 큐레이션을 삭제합니다.
+         */
         delete: operations["curationDelete"];
         options?: never;
         head?: never;
+        /**
+         * 인증된 사용자가 큐레이션 수정
+         * @description 인증된 사용자가 큐레이션을 수정합니다.
+         */
         patch: operations["curationUpdate"];
         trace?: never;
     };
@@ -123,6 +159,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * 로그인
+         * @description 자체 로그인
+         */
         get: operations["userSignIn"];
         put?: never;
         post?: never;
@@ -155,6 +195,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * 인증된 사용자가 고른 위치 조회
+         * @description 인증된 사용자가 고른 위치를 조회합니다.
+         */
         get: operations["locationFindAll"];
         put?: never;
         post?: never;
@@ -171,6 +215,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * 모든 사용자가 큐레이션 검색
+         * @description 모든 사용자가 큐레이션을 검색합니다.
+         */
         get: operations["searchCurations"];
         put?: never;
         post?: never;
@@ -187,6 +235,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * 구글 로그인
+         * @description 구글 로그인
+         */
         get: operations["googleCallback"];
         put?: never;
         post?: never;
@@ -206,6 +258,10 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /**
+         * 인증된 사용자가 큐레이션에 좋아요 취소
+         * @description 인증된 사용자가 큐레이션에 좋아요를 취소합니다.
+         */
         delete: operations["likeDelete"];
         options?: never;
         head?: never;
@@ -331,8 +387,26 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -355,8 +429,26 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -385,8 +477,26 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -409,8 +519,26 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+            /** @description 서버 내부 오류입니다. */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -433,8 +561,35 @@ export interface operations {
             };
         };
         responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
+                };
+            };
             /** @description Created */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -455,8 +610,26 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -485,8 +658,26 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -507,8 +698,26 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -533,8 +742,26 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -575,8 +802,26 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -615,8 +860,26 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateLocationListResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateLocationListResDto"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -637,8 +900,26 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+            /** @description 서버 내부 오류입니다. */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -659,8 +940,26 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleToken"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleToken"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -681,8 +980,26 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };

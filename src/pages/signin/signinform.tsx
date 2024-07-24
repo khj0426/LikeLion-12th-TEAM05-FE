@@ -1,10 +1,14 @@
+import { useContext } from 'react';
 import Logo from '../../../public/login.svg?react';
 import { z, ZodError } from 'zod';
 import { ChangeEvent, useState } from 'react';
 import { Button, Input } from '@/_components';
 import { loginSchema } from '@/pages/login/loginForm';
+import Swal from 'sweetalert2';
+import { UserContext } from '@/_context/userInfoContext';
 
 import { useSignIn } from '@/_hooks/mutation';
+import { useNavigate } from '@tanstack/react-router';
 interface LoginFormProps {
   onSubmit: (data: z.infer<typeof loginSchema>) => void;
 }
@@ -16,6 +20,8 @@ export const SignInForm = () => {
     email: '',
     password: '',
   });
+  const navigate = useNavigate();
+  const { setUserInfo } = useContext(UserContext);
   const [error, setError] = useState<ZodError | null>(null);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -80,11 +86,29 @@ export const SignInForm = () => {
                 try {
                   const a = loginSchema.parse(formData);
                   setError(null);
-                  mutate({
-                    name: formData.name,
-                    password: formData.password,
-                    email: formData.email,
-                  });
+                  mutate(
+                    {
+                      name: formData.name,
+                      password: formData.password,
+                      email: formData.email,
+                    },
+                    {
+                      onSuccess: () => {
+                        if (setUserInfo)
+                          setUserInfo({
+                            name: formData.name,
+                            email: formData.email,
+                          });
+                        Swal.fire('로그인에 성공했어요');
+                        navigate({
+                          to: '/',
+                        });
+                      },
+                      onError: (error) => {
+                        /*토스트처리*/
+                      },
+                    }
+                  );
                 } catch (e) {
                   if (e instanceof ZodError) {
                     setError(e);

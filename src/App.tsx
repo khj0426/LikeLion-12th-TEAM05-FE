@@ -6,6 +6,7 @@ import {
 import ReactDOM from 'react-dom/client';
 import '../index.css';
 
+import { UserContextProvider } from '@/_context/userInfoContext';
 import { Flowbite } from 'flowbite-react';
 import { routeTree } from './routeTree.gen';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
@@ -39,7 +40,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <Flowbite>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <UserContextProvider>
+          <RouterProvider router={router} />
+        </UserContextProvider>
       </QueryClientProvider>
     </Flowbite>
   );
