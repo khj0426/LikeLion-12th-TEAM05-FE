@@ -5,8 +5,6 @@ import '../index.css';
 import { Flowbite } from 'flowbite-react';
 import { routeTree } from './routeTree.gen';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { StrictMode } from 'react';
-
 const router = createRouter({ routeTree });
 
 declare module '@tanstack/react-router' {

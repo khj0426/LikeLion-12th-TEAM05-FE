@@ -7,6 +7,11 @@ import svgr from 'vite-plugin-svgr';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), TanStackRouterVite(), svgr()],
+  server: {
+    proxy: {
+      '/api': 'https://hayeongyou.shop',
+    },
+  },
   resolve: {
     alias: [
       {
