@@ -1,16 +1,16 @@
-import { ThemeContext } from '@/_context/themeContext';
-import { Button } from '@/_components';
-import Dark from '../../../public/dark.svg?react';
-import Light from '../../../public/light.svg?react';
-import { useContext } from 'react';
+import { ThemeContext } from '@/_context/themeContext'
+import { Button } from '@/_components'
+import Dark from '../../../public/dark.svg?react'
+import Light from '../../../public/light.svg?react'
+import { useContext } from 'react'
 
 export const ThemeChangeButton = () => {
-  const { toggleTheme, theme } = useContext(ThemeContext);
+  const { toggleTheme, theme } = useContext(ThemeContext)
 
   return (
     <Button
       onClick={toggleTheme}
-      size="small"
+      size="xs"
       style={{
         background: 'none',
         border: 'none',
@@ -22,5 +22,5 @@ export const ThemeChangeButton = () => {
         <Light width={30} height={30} />
       )}
     </Button>
-  );
-};
+  )
+}

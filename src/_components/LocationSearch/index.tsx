@@ -1,54 +1,54 @@
-import NoData from '../../../public/noData.svg?react';
-import { SetStateAction, useEffect, useRef, useState } from 'react';
-import { useGeolocation } from '@/_hooks';
-import { createMap, createSwalInput } from '@/_utils';
-import { Button } from '@/_components/button';
-import { Input } from '@/_components/input';
-import { Pagination } from 'flowbite-react';
-import Swal from 'sweetalert2';
+import NoData from '../../../public/noData.svg?react'
+import { SetStateAction, useEffect, useRef, useState } from 'react'
+import { useGeolocation } from '@/_hooks'
+import { createMap, createSwalInput } from '@/_utils'
+import { Button } from '@/_components/button'
+import { Input } from '@/_components/input'
+import { Pagination } from 'flowbite-react'
+import Swal from 'sweetalert2'
 
 interface Location {
-  name: string;
-  address: string;
-  description: string;
+  name: string
+  address: string
+  description: string
 }
 
 declare global {
   interface Window {
-    kakao: any;
+    kakao: any
   }
 }
 
 interface LocationSearchProps {
-  onSelectLocation: (locations: Location[]) => void;
-  lat?: number;
-  lng?: number;
+  onSelectLocation: (locations: Location[]) => void
+  lat?: number
+  lng?: number
 }
 
 interface PlaceData {
-  address_name: string;
-  category_group_code: string;
-  category_group_name: string;
-  category_name: string;
-  id: string;
-  phone: string;
-  place_name: string;
-  place_url: string;
-  road_address_name: string;
-  x: number;
-  y: number;
+  address_name: string
+  category_group_code: string
+  category_group_name: string
+  category_name: string
+  id: string
+  phone: string
+  place_name: string
+  place_url: string
+  road_address_name: string
+  x: number
+  y: number
 }
 
 interface Pagination {
-  current: number;
-  first: number;
-  gotoFirst: () => void;
-  gotoLast: () => void;
-  gotoPage: (_nextPage: number) => void;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-  perPage: number;
-  totalCount: number;
+  current: number
+  first: number
+  gotoFirst: () => void
+  gotoLast: () => void
+  gotoPage: (_nextPage: number) => void
+  hasNextPage: boolean
+  hasPrevPage: boolean
+  perPage: number
+  totalCount: number
 }
 
 export const LocationSearch = ({
@@ -56,14 +56,14 @@ export const LocationSearch = ({
   lat = 37.566826,
   lng = 126.9786567,
 }: LocationSearchProps) => {
-  const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
-  const { location } = useGeolocation(); // location 추가
-  const [places, setPlaces] = useState<PlaceData[]>([]);
-  const [query, setQuery] = useState('');
-  const [map, setMap] = useState<any>();
-  const [markers, setMarkers] = useState<any[]>([]);
-  const locationMapRef = useRef<HTMLDivElement | null>(null);
-  const [pagination, setPagination] = useState<Pagination | null>(null);
+  const [selectedLocations, setSelectedLocations] = useState<Location[]>([])
+  const { location } = useGeolocation() // location 추가
+  const [places, setPlaces] = useState<PlaceData[]>([])
+  const [query, setQuery] = useState('')
+  const [map, setMap] = useState<any>()
+  const [markers, setMarkers] = useState<any[]>([])
+  const locationMapRef = useRef<HTMLDivElement | null>(null)
+  const [pagination, setPagination] = useState<Pagination | null>(null)
 
   useEffect(() => {
     if (locationMapRef.current) {
@@ -80,39 +80,39 @@ export const LocationSearch = ({
           },
         },
         container: locationMapRef.current,
-      });
-      setMap(newKakaoMap);
+      })
+      setMap(newKakaoMap)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (!map) {
-      return;
+      return
     }
 
-    setMarkers([]);
-    const ps = new window.kakao.maps.services.Places();
+    setMarkers([])
+    const ps = new window.kakao.maps.services.Places()
     ps.keywordSearch(query, (data: PlaceData[], _: any, pagination: any) => {
       markers.forEach((marker) => {
-        marker.setMap(null);
-      });
-      setPlaces(data);
-      setPagination(pagination);
+        marker.setMap(null)
+      })
+      setPlaces(data)
+      setPagination(pagination)
 
-      const newMarkers: SetStateAction<any[]> = [];
-      const bounds = new window.kakao.maps.LatLngBounds();
+      const newMarkers: SetStateAction<any[]> = []
+      const bounds = new window.kakao.maps.LatLngBounds()
 
       data.forEach((eachData, index) => {
-        const position = new window.kakao.maps.LatLng(eachData.y, eachData.x);
-        const marker = addMarker(position, eachData.place_name, index);
-        newMarkers.push(marker);
-        bounds.extend(position);
-      });
+        const position = new window.kakao.maps.LatLng(eachData.y, eachData.x)
+        const marker = addMarker(position, eachData.place_name, index)
+        newMarkers.push(marker)
+        bounds.extend(position)
+      })
 
-      setMarkers(newMarkers);
-      map.setBounds(bounds);
-    });
-  }, [query]);
+      setMarkers(newMarkers)
+      map.setBounds(bounds)
+    })
+  }, [query])
 
   const addMarker = (position: any, title: string, index: number) => {
     const marker = new window.kakao.maps.Marker({
@@ -124,18 +124,18 @@ export const LocationSearch = ({
           spriteSize: new window.kakao.maps.Size(36, 691),
           spriteOrigin: new window.kakao.maps.Point(0, index * 46 + 10),
           offset: new window.kakao.maps.Point(13, 37),
-        }
+        },
       ),
-    });
+    })
 
-    marker.setMap(map);
+    marker.setMap(map)
 
-    return marker;
-  };
+    return marker
+  }
 
   const handleSelectLocation = (location: PlaceData) => {
-    setMarkers([]);
-    const position = new window.kakao.maps.LatLng(location.y, location.x);
+    setMarkers([])
+    const position = new window.kakao.maps.LatLng(location.y, location.x)
     const infoWindow = new window.kakao.maps.InfoWindow({
       content: `
         <div style="
@@ -152,35 +152,35 @@ export const LocationSearch = ({
       `,
       position,
       removable: true,
-    });
+    })
 
     markers.forEach((marker) => {
-      marker.setMap(null);
-    });
+      marker.setMap(null)
+    })
     const marker = new window.kakao.maps.Marker({
       position,
-    });
+    })
 
     window.kakao.maps.event.addListener(marker, 'click', function () {
       Swal.fire({
         title: '장소를 제거하시겠습니까?',
         icon: 'question',
       }).then(() => {
-        marker.setMap(null);
-        infoWindow.close();
+        marker.setMap(null)
+        infoWindow.close()
         setSelectedLocations(
           selectedLocations.filter(
-            (selectedLocation) => selectedLocation.name !== location.place_name
-          )
-        );
-      });
-    });
+            (selectedLocation) => selectedLocation.name !== location.place_name,
+          ),
+        )
+      })
+    })
 
-    infoWindow.open(map, marker);
-    map.setLevel(1);
-    marker.setMap(map);
-    map.setCenter(position);
-  };
+    infoWindow.open(map, marker)
+    map.setLevel(1)
+    marker.setMap(map)
+    map.setCenter(position)
+  }
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
@@ -188,7 +188,7 @@ export const LocationSearch = ({
       <Input
         placeholder="장소는 최대 3개까지 선택 가능합니다.구체적인 장소를 입력해주세요: 예)일산호수공원"
         onChange={(e) => {
-          setQuery(e.target.value);
+          setQuery(e.target.value)
         }}
       />
 
@@ -230,11 +230,11 @@ export const LocationSearch = ({
                       variant={'register'}
                       size="xs"
                       onClick={() => {
-                        handleSelectLocation(eachPlace);
+                        handleSelectLocation(eachPlace)
                         createSwalInput(
                           '장소 설명',
                           '',
-                          '장소에 대해 설명을 적어주세요'
+                          '장소에 대해 설명을 적어주세요',
                         ).then((val) => {
                           setSelectedLocations([
                             ...selectedLocations,
@@ -243,8 +243,8 @@ export const LocationSearch = ({
                               description: val,
                               address: eachPlace.road_address_name,
                             },
-                          ]);
-                        });
+                          ])
+                        })
                       }}
                     >
                       선택
@@ -299,8 +299,8 @@ export const LocationSearch = ({
                     onClick={() =>
                       setSelectedLocations(
                         selectedLocations.filter(
-                          (l) => location.name !== l.name
-                        )
+                          (l) => location.name !== l.name,
+                        ),
                       )
                     }
                   >
@@ -319,14 +319,14 @@ export const LocationSearch = ({
             Swal.fire({
               icon: 'error',
               title: '장소를 1개 이상 선택해주세요',
-            });
-            return;
+            })
+            return
           }
 
           const parseSelectedLocations = selectedLocations
             .filter((location) => location.name)
             .map((location) => location.name)
-            .join(', ');
+            .join(', ')
 
           Swal.fire({
             title: '선택된 장소',
@@ -336,9 +336,9 @@ export const LocationSearch = ({
             cancelButtonText: '취소하기',
           }).then((res) => {
             if (res.isConfirmed) {
-              onSelectLocation(selectedLocations);
+              onSelectLocation(selectedLocations)
             }
-          });
+          })
         }}
         size="md"
         shape="circular"
@@ -352,5 +352,5 @@ export const LocationSearch = ({
         +
       </Button>
     </div>
-  );
-};
+  )
+}

@@ -1,4 +1,4 @@
-import { LocationSearch } from '@/_components/LocationSearch';
+import { LocationSearch } from '@/_components/LocationSearch'
 export const CurationCreate = () => {
   return (
     <main className="relative">
@@ -6,5 +6,5 @@ export const CurationCreate = () => {
         onSelectLocation={(locations) => console.log(locations)}
       />
     </main>
-  );
-};
+  )
+}

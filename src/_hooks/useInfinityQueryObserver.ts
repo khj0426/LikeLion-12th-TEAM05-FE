@@ -1,42 +1,42 @@
-import { InfiniteQueryObserverResult } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
+import { InfiniteQueryObserverResult } from '@tanstack/react-query'
+import { useEffect, useRef } from 'react'
 
 interface useInfinityQueryObserverProps {
-  threshold: number;
-  hasNextPage?: boolean;
-  fetchNextPage: () => Promise<InfiniteQueryObserverResult>;
+  threshold: number
+  hasNextPage?: boolean
+  fetchNextPage: () => Promise<InfiniteQueryObserverResult>
 }
 export const useInfinityQueryObserver = ({
   threshold = 1,
   hasNextPage,
   fetchNextPage,
 }: useInfinityQueryObserverProps) => {
-  const target = useRef<HTMLDivElement | null>(null);
+  const target = useRef<HTMLDivElement | null>(null)
 
   const observerCallback: IntersectionObserverCallback = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && hasNextPage) {
-        fetchNextPage();
+        fetchNextPage()
       }
-    });
-  };
+    })
+  }
 
   useEffect(() => {
     if (!target) {
-      return;
+      return
     }
     if (!target.current) {
-      return;
+      return
     }
     const observer = new IntersectionObserver(observerCallback, {
       threshold,
-    });
-    observer.observe(target.current);
+    })
+    observer.observe(target.current)
 
-    return () => observer.disconnect();
-  }, []);
+    return () => observer.disconnect()
+  }, [])
 
   return {
     target,
-  };
-};
+  }
+}

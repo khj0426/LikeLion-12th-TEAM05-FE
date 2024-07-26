@@ -1,19 +1,19 @@
-import { Button, Input } from '@/_components';
-import { Link } from '@tanstack/react-router';
-import { useGetCuration, useGetQurationBySearch } from '@/_hooks/query';
-import { useInfinityQueryObserver } from '@/_hooks';
-import { useState, useRef } from 'react';
+import { Button, Input } from '@/_components'
+import { Link } from '@tanstack/react-router'
+import { useGetCuration, useGetQurationBySearch } from '@/_hooks/query'
+import { useInfinityQueryObserver } from '@/_hooks'
+import { useState, useRef } from 'react'
 
 export const CurationMap = () => {
-  const { data, fetchNextPage } = useGetCuration();
+  const { data, fetchNextPage } = useGetCuration()
   const { target } = useInfinityQueryObserver({
     threshold: 0.1,
     fetchNextPage: fetchNextPage,
-  });
-  const [query, setQuery] = useState('');
-  const { data: queryCurationData } = useGetQurationBySearch(query);
+  })
+  const [query, setQuery] = useState('')
+  const { data: queryCurationData } = useGetQurationBySearch(query)
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   return (
     <main className="relative flex flex-col gap-[25px] w-[80%] ml-[150px]">
@@ -77,5 +77,5 @@ export const CurationMap = () => {
 
       <div ref={target}></div>
     </main>
-  );
-};
+  )
+}

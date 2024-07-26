@@ -1,1 +1,1 @@
-export const KakaoMapClient = () => {};
+export const KakaoMapClient = () => {}

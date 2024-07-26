@@ -1,21 +1,20 @@
-import { components } from '../../../../schema';
-import { useQuery } from '@tanstack/react-query';
-import { axiosClient } from '@/services';
+import { components } from '../../../../schema'
+import { useQuery } from '@tanstack/react-query'
+import { axiosClient } from '@/services'
 
 type APIResponse =
-  components['schemas']['ApiResponseTemplateCurationListResDto'];
+  components['schemas']['ApiResponseTemplateCurationListResDto']
 
-type Qurations = Pick<APIResponse, 'data'>['data'];
+type Qurations = Pick<APIResponse, 'data'>['data']
 export const getPopluarCuration = async () => {
   try {
-    const response = await axiosClient.get<Exclude<Qurations, 'data'>>(
-      '/curation/popular'
-    );
-    return response.data;
+    const response =
+      await axiosClient.get<Exclude<Qurations, 'data'>>('/curation/popular')
+    return response.data
   } catch (e) {
-    throw e;
+    throw e
   }
-};
+}
 
 export const useGetPopluarCurations = () => {
   return useQuery({
@@ -24,5 +23,5 @@ export const useGetPopluarCurations = () => {
     queryFn: getPopluarCuration,
     staleTime: Infinity,
     queryKey: ['getPopluarCuration'],
-  });
-};
+  })
+}

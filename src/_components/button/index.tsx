@@ -1,15 +1,15 @@
-import { ComponentPropsWithoutRef } from 'react';
-import { cva, VariantProps } from 'class-variance-authority';
-import { cn } from '@/_utils';
-import { Button as FlowBiteButton } from 'flowbite-react';
+import { ComponentPropsWithoutRef } from 'react'
+import { cva, VariantProps } from 'class-variance-authority'
+import { cn } from '@/_utils'
+import { Button as FlowBiteButton } from 'flowbite-react'
 
 interface ButtonProps
   extends ComponentPropsWithoutRef<'button'>,
     VariantProps<typeof buttonVariants> {
-  as?: 'a' | 'button';
-  shape?: 'circular' | 'square' | 'rounded';
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  block?: boolean;
+  as?: 'a' | 'button'
+  shape?: 'circular' | 'square' | 'rounded'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  block?: boolean
 }
 
 const buttonVariants = cva(
@@ -56,8 +56,8 @@ const buttonVariants = cva(
       size: 'md',
       shape: 'rounded',
     },
-  }
-);
+  },
+)
 
 export const Button = ({
   size = 'xs',
@@ -77,12 +77,12 @@ export const Button = ({
     }),
     {
       'w-full': block,
-    }
-  );
+    },
+  )
 
   return (
     <FlowBiteButton className={className} {...rest}>
       {rest.children}
     </FlowBiteButton>
-  );
-};
+  )
+}

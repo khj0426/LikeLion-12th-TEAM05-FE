@@ -1,11 +1,11 @@
-import { cva, VariantProps } from 'class-variance-authority';
-import { Label } from 'flowbite-react';
-import { ComponentPropsWithoutRef, ReactNode, forwardRef } from 'react';
+import { cva, VariantProps } from 'class-variance-authority'
+import { Label } from 'flowbite-react'
+import { ComponentPropsWithoutRef, ReactNode, forwardRef } from 'react'
 
 interface InputProps
   extends ComponentPropsWithoutRef<'input'>,
     VariantProps<typeof inputVariants> {
-  icon?: ReactNode;
+  icon?: ReactNode
 }
 
 const inputVariants = cva('text-sm transition-colors duration-300 w-[300px]', {
@@ -28,7 +28,7 @@ const inputVariants = cva('text-sm transition-colors duration-300 w-[300px]', {
   defaultVariants: {
     variant: 'primary',
   },
-});
+})
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   return (
@@ -41,7 +41,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         className={inputVariants({ variant: props.variant })}
       />
     </div>
-  );
-});
+  )
+})
 
-Input.displayName = 'Input';
+Input.displayName = 'Input'
