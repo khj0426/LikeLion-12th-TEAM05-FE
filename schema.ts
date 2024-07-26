@@ -44,6 +44,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sign-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 로그인
+         * @description 자체 로그인
+         */
+        post: operations["userSignIn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/location/{curationId}": {
         parameters: {
             query?: never;
@@ -55,7 +75,7 @@ export interface paths {
         put?: never;
         /**
          * 인증된 사용자가 위치 생성
-         * @description 인증된 사용자가 위치를 생성합니다.
+         * @description 인증된 사용자가 위치를 생성(큐레이션 id, 위치 이름, 이미지)합니다.
          */
         post: operations["locationSave"];
         delete?: never;
@@ -73,13 +93,13 @@ export interface paths {
         };
         /**
          * 모든 사용자가 큐레이션 6개씩 조회
-         * @description 모든 사용자가 큐레이션을 6개씩 조회합니다.
+         * @description 모든 사용자가 산책로 지도 페이지에서 큐레이션을 한 페이지 당 6개씩 조회합니다.
          */
         get: operations["curationFindAll"];
         put?: never;
         /**
          * 인증된 사용자가 큐레이션 생성
-         * @description 인증된 사용자가 큐레이션을 생성합니다.
+         * @description 인증된 사용자가 산책로 생성 페이지에서 큐레이션을 생성합니다.
          */
         post: operations["curationSave"];
         delete?: never;
@@ -99,7 +119,7 @@ export interface paths {
         put?: never;
         post?: never;
         /**
-         * 인증된 사용자가 위치 삭제.
+         * 인증된 사용자가 위치 삭제
          * @description 인증된 사용자가 위치를 삭제합니다.
          */
         delete: operations["locationDelete"];
@@ -107,7 +127,7 @@ export interface paths {
         head?: never;
         /**
          * 인증된 사용자가 위치 수정
-         * @description 인증된 사용자가 위치를 수정합니다.
+         * @description 인증된 사용자가 위치를 수정(위치 이름, 이미지)합니다.
          */
         patch: operations["locationUpdate"];
         trace?: never;
@@ -131,7 +151,7 @@ export interface paths {
         head?: never;
         /**
          * 인증된 사용자가 큐레이션 수정
-         * @description 인증된 사용자가 큐레이션을 수정합니다.
+         * @description 인증된 사용자가 산책로 지도 페이지에서 큐레이션을 수정(큐레이션 제목, 설명)합니다.
          */
         patch: operations["curationUpdate"];
         trace?: never;
@@ -152,26 +172,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sign-in": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 로그인
-         * @description 자체 로그인
-         */
-        get: operations["userSignIn"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/profile": {
         parameters: {
             query?: never;
@@ -180,6 +180,26 @@ export interface paths {
             cookie?: never;
         };
         get: operations["profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/login/oauth2/code/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 구글 로그인
+         * @description 구글 로그인
+         */
+        get: operations["googleCallback"];
         put?: never;
         post?: never;
         delete?: never;
@@ -217,7 +237,7 @@ export interface paths {
         };
         /**
          * 모든 사용자가 큐레이션 검색
-         * @description 모든 사용자가 큐레이션을 검색합니다.
+         * @description 모든 사용자가 산책로 지도 페이지에서 큐레이션을 검색합니다.
          */
         get: operations["searchCurations"];
         put?: never;
@@ -228,7 +248,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/code/google": {
+    "/curation/recent": {
         parameters: {
             query?: never;
             header?: never;
@@ -236,10 +256,30 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * 구글 로그인
-         * @description 구글 로그인
+         * 모든 사용자가 최신순으로 정렬된 큐레이션 6개 조회
+         * @description 모든 사용자가 랜딩페이지에서 최신순으로 정렬된 6개의 큐레이션을 조회합니다.
          */
-        get: operations["googleCallback"];
+        get: operations["findTop6byOrderByCreateDateDesc"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/curation/popular": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 모든 사용자가 좋아요 순으로 정렬된 큐레이션 6개 조회
+         * @description 모든 사용자가 랜딩페이지에서 좋아요 순으로 정렬된 6개의 큐레이션을 조회합니다.
+         */
+        get: operations["findTop6ByOrderByLikeCountDesc"];
         put?: never;
         post?: never;
         delete?: never;
@@ -282,8 +322,35 @@ export interface components {
             name: string;
             email: string;
             password: string;
+            refreshToken?: string;
             /** @enum {string} */
-            role?: "USER";
+            role?: "ROLE_USER";
+        };
+        TokenDto: {
+            grantType?: string;
+            accessToken?: string;
+            refreshToken?: string;
+        };
+        ApiResponseTemplateString: {
+            status?: string;
+            message?: string;
+            data?: string;
+        };
+        UserSignInReqDto: {
+            email: string;
+            password: string;
+            refreshToken?: string;
+        };
+        ApiResponseTemplateUserSignInResDto: {
+            status?: string;
+            message?: string;
+            data?: components["schemas"]["UserSignInResDto"];
+        };
+        UserSignInResDto: {
+            name?: string;
+            email?: string;
+            accessToken?: string;
+            refreshToken?: string;
         };
         LocationSaveReqDto: {
             name?: string;
@@ -317,6 +384,8 @@ export interface components {
             id?: number;
             name?: string;
             content?: string;
+            /** Format: date-time */
+            createDate?: string;
             /** Format: int32 */
             likeCount?: number;
         };
@@ -329,19 +398,8 @@ export interface components {
             name?: string;
             content?: string;
         };
-        UserSignInReqDto: {
-            email: string;
-            password: string;
-        };
-        ApiResponseTemplateUserSignInResDto: {
-            status?: string;
-            message?: string;
-            data?: components["schemas"]["UserSignInResDto"];
-        };
-        UserSignInResDto: {
-            name?: string;
-            email?: string;
-            token?: string;
+        GoogleToken: {
+            accessToken?: string;
         };
         ApiResponseTemplateLocationListResDto: {
             status?: string;
@@ -358,14 +416,6 @@ export interface components {
         };
         CurationListResDto: {
             curations?: components["schemas"]["CurationInfoResDto"][];
-        };
-        GoogleToken: {
-            accessToken?: string;
-        };
-        ApiResponseTemplateString: {
-            status?: string;
-            message?: string;
-            data?: string;
         };
     };
     responses: never;
@@ -418,7 +468,9 @@ export interface operations {
     };
     userSignUp: {
         parameters: {
-            query?: never;
+            query: {
+                tokenDto: components["schemas"]["TokenDto"];
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -435,7 +487,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 잘못된 요청입니다. */
@@ -444,7 +496,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -453,7 +505,49 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+        };
+    };
+    userSignIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserSignInReqDto"];
+            };
+        };
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
                 };
             };
         };
@@ -791,46 +885,6 @@ export interface operations {
             };
         };
     };
-    userSignIn: {
-        parameters: {
-            query: {
-                userSignInReqDto: components["schemas"]["UserSignInReqDto"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 응답 생성에 성공하였습니다. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
-                };
-            };
-            /** @description 잘못된 요청입니다. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
-                };
-            };
-            /** @description 인증이 필요합니다. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
-                };
-            };
-        };
-    };
     profile: {
         parameters: {
             query?: never;
@@ -847,6 +901,46 @@ export interface operations {
                 };
                 content: {
                     "*/*": string;
+                };
+            };
+        };
+    };
+    googleCallback: {
+        parameters: {
+            query: {
+                code: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleToken"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleToken"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleToken"];
                 };
             };
         };
@@ -929,11 +1023,9 @@ export interface operations {
             };
         };
     };
-    googleCallback: {
+    findTop6byOrderByCreateDateDesc: {
         parameters: {
-            query: {
-                code: string;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -946,7 +1038,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleToken"];
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
                 };
             };
             /** @description 잘못된 요청입니다. */
@@ -955,16 +1047,54 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleToken"];
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
                 };
             };
-            /** @description 인증이 필요합니다. */
-            401: {
+            /** @description 서버 내부 오류입니다. */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleToken"];
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+        };
+    };
+    findTop6ByOrderByLikeCountDesc: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+            /** @description 서버 내부 오류입니다. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
                 };
             };
         };
