@@ -8,11 +8,11 @@ type APIResponse =
 
 export const postCuration = async ({ name, content }: APIRequest) => {
   try {
-    const response = await axiosClient.post<APIResponse>('/curation', {
+    const response = await axiosClient.post<APIResponse['data']>('/curation', {
       name,
       content,
     })
-    return response.data.data
+    return response?.data
   } catch (e) {
     throw e
   }

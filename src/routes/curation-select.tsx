@@ -5,7 +5,10 @@ import { useCuration } from '@/_hooks/mutation/useCuration'
 
 export const Route = createFileRoute('/curation-select')({
   component: () => {
-    const mutate = useCuration()
+    const navigate = useNavigate({
+      from: '/curation-select',
+    })
+    const { mutate } = useCuration()
     const [qurationName, setQurationName] = useState('')
     const [qurationDescription, setQurationDescription] = useState('')
     const [qurationId, setQurationId] = useState('')
@@ -47,27 +50,41 @@ export const Route = createFileRoute('/curation-select')({
               size="xl"
               onClick={() => {
                 if (qurationId) {
+                  navigate({
+                    to: '/curation-create',
+                    search: {
+                      name: qurationName,
+                      id: qurationId,
+                      content: qurationDescription,
+                    },
+                  })
                   return
                 }
-                mutate.mutate(
-                  { name: qurationName, content: qurationDescription },
-                  {
-                    onSuccess: (data) => console.log(data),
-                    onError: () => setQurationId('asd'),
-                  },
-                )
+                if (!qurationId) {
+                  mutate(
+                    { name: qurationName, content: qurationDescription },
+                    {
+                      onSuccess: (data) => {
+                        setQurationId(() => data?.id + '')
+                        navigate({
+                          to: '/curation-create',
+                          search: {
+                            name: qurationName,
+                            id: data?.id,
+                            content: qurationDescription,
+                          },
+                        })
+                      },
+
+                      /*에러처리*/
+
+                      onError: () => setQurationId('asd'),
+                    },
+                  )
+                }
               }}
             >
-              <Link
-                to={'/curation-create'}
-                search={{
-                  name: qurationName,
-                  content: qurationDescription,
-                  id: qurationId,
-                }}
-              >
-                산책로 추가하러 가기
-              </Link>
+              산책로 추가하러 가기
             </Button>
           </label>
         </div>

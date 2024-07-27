@@ -9,7 +9,7 @@ type APIRequest = components['schemas']['UserSignUpReqDto'];
 export const postSignIn = async ({
   name,
   email,
-  role = 'USER',
+  role = 'ROLE_USER',
   password,
 }: APIRequest) => {
   try {
