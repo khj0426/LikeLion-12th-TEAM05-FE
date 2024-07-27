@@ -1,9 +1,26 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  Link,
+  redirect,
+  useNavigate,
+} from '@tanstack/react-router'
 import { useState } from 'react'
 import { Button, Input } from '@/_components'
 import { useCuration } from '@/_hooks/mutation/useCuration'
+import Swal from 'sweetalert2'
 
 export const Route = createFileRoute('/curation-select')({
+  beforeLoad: () => {
+    if (!localStorage.getItem('accessToken')) {
+      Swal.fire('로그인이 필요합니다!')
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
   component: () => {
     const navigate = useNavigate({
       from: '/curation-select',
