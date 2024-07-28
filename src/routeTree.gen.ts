@@ -18,7 +18,7 @@ import { Route as CurationSelectImport } from './routes/curation-select'
 import { Route as CurationMapsImport } from './routes/curation-maps'
 import { Route as CurationCreateImport } from './routes/curation-create'
 import { Route as IndexImport } from './routes/index'
-import { Route as CurationMapsIdImport } from './routes/curation-maps/$id'
+import { Route as CurationMapsCurationidImport } from './routes/curation-maps.$curationid'
 
 // Create/Update Routes
 
@@ -57,8 +57,8 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const CurationMapsIdRoute = CurationMapsIdImport.update({
-  path: '/$id',
+const CurationMapsCurationidRoute = CurationMapsCurationidImport.update({
+  path: '/$curationid',
   getParentRoute: () => CurationMapsRoute,
 } as any)
 
@@ -115,11 +115,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SigninImport
       parentRoute: typeof rootRoute
     }
-    '/curation-maps/$id': {
-      id: '/curation-maps/$id'
-      path: '/$id'
-      fullPath: '/curation-maps/$id'
-      preLoaderRoute: typeof CurationMapsIdImport
+    '/curation-maps/$curationid': {
+      id: '/curation-maps/$curationid'
+      path: '/$curationid'
+      fullPath: '/curation-maps/$curationid'
+      preLoaderRoute: typeof CurationMapsCurationidImport
       parentRoute: typeof CurationMapsImport
     }
   }
@@ -130,7 +130,9 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
   CurationCreateRoute,
-  CurationMapsRoute: CurationMapsRoute.addChildren({ CurationMapsIdRoute }),
+  CurationMapsRoute: CurationMapsRoute.addChildren({
+    CurationMapsCurationidRoute,
+  }),
   CurationSelectRoute,
   LoginRoute,
   MypageRoute,
@@ -163,7 +165,7 @@ export const routeTree = rootRoute.addChildren({
     "/curation-maps": {
       "filePath": "curation-maps.tsx",
       "children": [
-        "/curation-maps/$id"
+        "/curation-maps/$curationid"
       ]
     },
     "/curation-select": {
@@ -178,8 +180,8 @@ export const routeTree = rootRoute.addChildren({
     "/signin": {
       "filePath": "signin.tsx"
     },
-    "/curation-maps/$id": {
-      "filePath": "curation-maps/$id.tsx",
+    "/curation-maps/$curationid": {
+      "filePath": "curation-maps.$curationid.tsx",
       "parent": "/curation-maps"
     }
   }

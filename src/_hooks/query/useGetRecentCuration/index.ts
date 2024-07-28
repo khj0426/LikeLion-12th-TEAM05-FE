@@ -7,8 +7,9 @@ type APIResponse =
 
 export const getRecentCuration = async () => {
   try {
-    const response = await axiosClient.get<APIResponse>('/curation/recent')
-    return response.data.data?.curations
+    const response =
+      await axiosClient.get<APIResponse['data']>('/curation/recent')
+    return response.data?.curations
   } catch (e) {
     throw e
   }

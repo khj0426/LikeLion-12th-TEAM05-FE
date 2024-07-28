@@ -5,7 +5,7 @@ import { axiosClient } from '@/services'
 type APIResponse =
   components['schemas']['ApiResponseTemplateCurationListResDto']['data']
 
-const getCuration = async ({ pageParam = 0 }: { pageParam: number }) => {
+const getCuration = async ({ pageParam }: { pageParam: number }) => {
   try {
     const response = await axiosClient.get<APIResponse>(
       `/curation?page=${pageParam}`,

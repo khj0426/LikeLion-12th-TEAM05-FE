@@ -312,6 +312,11 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ApiResponseTemplate: {
+            status?: string;
+            message?: string;
+            data?: Record<string, never>;
+        };
         ApiResponseTemplateSuccessCode: {
             status?: string;
             message?: string;
@@ -322,14 +327,10 @@ export interface components {
             name: string;
             email: string;
             password: string;
+            accessToken?: string;
             refreshToken?: string;
             /** @enum {string} */
             role?: "ROLE_USER";
-        };
-        TokenDto: {
-            grantType?: string;
-            accessToken?: string;
-            refreshToken?: string;
         };
         ApiResponseTemplateString: {
             status?: string;
@@ -339,6 +340,7 @@ export interface components {
         UserSignInReqDto: {
             email: string;
             password: string;
+            accessToken?: string;
             refreshToken?: string;
         };
         ApiResponseTemplateUserSignInResDto: {
@@ -363,6 +365,8 @@ export interface components {
             data?: components["schemas"]["LocationInfoResDto"];
         };
         LocationInfoResDto: {
+            /** Format: int64 */
+            locationId?: number;
             /** Format: int64 */
             curationId?: number;
             name?: string;
@@ -464,12 +468,21 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
                 };
             };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
         };
     };
     userSignUp: {
         parameters: {
             query: {
-                tokenDto: components["schemas"]["TokenDto"];
+                email: string;
             };
             header?: never;
             path?: never;
@@ -506,6 +519,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -548,6 +570,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -598,6 +629,15 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
                 };
             };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
         };
     };
     curationFindAll: {
@@ -637,7 +677,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -691,6 +731,15 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
                 };
             };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
         };
     };
     locationDelete: {
@@ -729,6 +778,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -779,6 +837,15 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
                 };
             };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
         };
     };
     curationDelete: {
@@ -817,6 +884,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -863,6 +939,15 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
                 };
             };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
         };
     };
     Test: {
@@ -883,6 +968,15 @@ export interface operations {
                     "*/*": string;
                 };
             };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
         };
     };
     profile: {
@@ -901,6 +995,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": string;
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -943,6 +1046,15 @@ export interface operations {
                     "*/*": components["schemas"]["GoogleToken"];
                 };
             };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
         };
     };
     locationFindAll: {
@@ -979,6 +1091,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateLocationListResDto"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -1018,7 +1139,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -1056,7 +1177,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -1094,7 +1215,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -1135,6 +1256,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };

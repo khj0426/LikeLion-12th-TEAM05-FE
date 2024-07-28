@@ -1,10 +1,10 @@
-import { components } from '../../../../schema';
-import { useMutation } from '@tanstack/react-query';
-import { axiosClient } from '@/services';
-import { AxiosError } from 'axios';
+import { components } from '../../../../schema'
+import { useMutation } from '@tanstack/react-query'
+import { axiosClient } from '@/services'
+import { AxiosError } from 'axios'
 
-type APIResponse = components['schemas']['UserSignInResDto'];
-type APIRequest = components['schemas']['UserSignUpReqDto'];
+type APIResponse = components['schemas']['UserSignInResDto']
+type APIRequest = components['schemas']['UserSignUpReqDto']
 
 export const postSignIn = async ({
   name,
@@ -18,16 +18,16 @@ export const postSignIn = async ({
       email,
       role,
       password,
-    });
-    return response.data;
+    })
+    return response.data
   } catch (e) {
     if (e instanceof AxiosError) {
-      throw e;
+      throw e
     }
   }
-};
+}
 export const useSignIn = () => {
   return useMutation({
     mutationFn: postSignIn,
-  });
-};
+  })
+}

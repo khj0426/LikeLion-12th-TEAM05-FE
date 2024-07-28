@@ -5,12 +5,14 @@ import { createMap, createSwalInput } from '@/_utils'
 import { Button } from '@/_components/button'
 import { Input } from '@/_components/input'
 import { Pagination } from 'flowbite-react'
+import { usePostCurationLocation } from '@/_hooks/mutation'
 import Swal from 'sweetalert2'
 
 interface Location {
   name: string
   address: string
   description: string
+  locationImage?: string
 }
 
 declare global {
@@ -56,6 +58,8 @@ export const LocationSearch = ({
   lat = 37.566826,
   lng = 126.9786567,
 }: LocationSearchProps) => {
+  const { mutate } = usePostCurationLocation()
+  const curationId = Number(new URLSearchParams(window.location.href).get('id'))
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([])
   const { location } = useGeolocation() // location 추가
   const [places, setPlaces] = useState<PlaceData[]>([])
@@ -186,7 +190,7 @@ export const LocationSearch = ({
       style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
     >
       <Input
-        placeholder="장소는 최대 3개까지 선택 가능합니다.구체적인 장소를 입력해주세요: 예)일산호수공원"
+        placeholder="구체적인 장소를 입력해주세요: 예)일산호수공원"
         onChange={(e) => {
           setQuery(e.target.value)
         }}
@@ -216,10 +220,10 @@ export const LocationSearch = ({
                 <div
                   key={eachPlace.id}
                   style={{ marginBottom: '5px' }}
-                  className="text-LIGHT_SLATE border-b border-[#8C8CA1]"
+                  className="text-LIGHT_SLATE border-b border-[#8C8CA1] line-clamp-2 w-300px"
                 >
                   <div className="flex align-center justify-between">
-                    <div className="max-w-[250px] overflow-hidden whitespace-nowrap text-ellipsis">
+                    <div className="overflow-hidden  line-clamp-2 w-[200px]">
                       <strong>{`[${index + 1}] ${
                         eachPlace.place_name
                       }`}</strong>
@@ -240,8 +244,9 @@ export const LocationSearch = ({
                             ...selectedLocations,
                             {
                               name: eachPlace.place_name,
-                              description: val,
+                              description: val?.value,
                               address: eachPlace.road_address_name,
+                              locationImage: val?.image,
                             },
                           ])
                         })
@@ -286,10 +291,10 @@ export const LocationSearch = ({
               <div
                 key={location.name}
                 style={{ marginBottom: '5px' }}
-                className="text-LIGHT_SLATE border-b border-[#8C8CA1]"
+                className="text-LIGHT_SLATE border-b border-[#8C8CA1] line-clamp-2 w-300px"
               >
-                <div className="flex align-center justify-between">
-                  <div className="max-w-[250px] overflow-hidden whitespace-nowrap text-ellipsis">
+                <div className="flex align-center justify-between ">
+                  <div className="overflow-hidden  line-clamp-2 w-[200px]">
                     <strong>{`[${index + 1}] ${location.name}`}</strong>
                     <p>{location.address}</p>
                   </div>
@@ -336,7 +341,14 @@ export const LocationSearch = ({
             cancelButtonText: '취소하기',
           }).then((res) => {
             if (res.isConfirmed) {
-              onSelectLocation(selectedLocations)
+              mutate({
+                locationId: 1,
+                locationImage: selectedLocations[0].locationImage,
+                name: selectedLocations[0].name,
+                description: selectedLocations[0].description,
+                address: selectedLocations[0].address,
+                curationId,
+              })
             }
           })
         }}

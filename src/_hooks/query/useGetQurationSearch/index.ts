@@ -7,7 +7,7 @@ type APIResponse =
 
 export const getQurationsByQuery = async (query: string) => {
   try {
-    const response = await axiosClient.get<APIResponse>(
+    const response = await axiosClient.get<APIResponse['data']>(
       `/curation/search?query=${query}`,
     )
     return response.data

@@ -3,7 +3,7 @@ import Swal from 'sweetalert2'
 
 export const Route = createFileRoute('/mypage')({
   beforeLoad: () => {
-    if (!localStorage.getItem('accessToken')) {
+    if (!sessionStorage.getItem('accessToken')) {
       Swal.fire('로그인이 필요합니다!')
       throw redirect({
         to: '/login',

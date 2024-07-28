@@ -1,8 +1,10 @@
+import Heart from '../../../public/heart.svg?react'
 import { Button, Input } from '@/_components'
 import { Link } from '@tanstack/react-router'
 import { useGetCuration, useGetQurationBySearch } from '@/_hooks/query'
 import { useInfinityQueryObserver } from '@/_hooks'
 import { useState, useRef } from 'react'
+import { Card } from 'flowbite-react'
 
 export const CurationMap = () => {
   const { data, fetchNextPage } = useGetCuration()
@@ -10,8 +12,10 @@ export const CurationMap = () => {
     threshold: 0.1,
     fetchNextPage: fetchNextPage,
   })
+  console.log(data)
   const [query, setQuery] = useState('')
   const { data: queryCurationData } = useGetQurationBySearch(query)
+  console.log
 
   const inputRef = useRef<HTMLInputElement | null>(null)
 
@@ -33,29 +37,36 @@ export const CurationMap = () => {
       </div>
       <div className="grid grid-cols-2 gap-3 w-full max-w-[1200px]">
         {data?.pages?.flat()?.map((item, index) => (
-          <div key={index} className="flex gap-[50px] w-[300px]">
+          <div key={index} className="flex gap-[15px] p-4">
             {!query &&
               item?.response?.data?.curations?.map((curation) => (
                 <Link
-                  to={`/curation-maps`}
-                  search={{ id: curation.id }}
+                  to={`/curation-maps/${curation.id + ''}`}
+                  params={{
+                    curationid: curation.id + '',
+                  }}
                   key={curation.id}
-                  className="cursor-pointer w-full h-[180px] bg-WHITE rounded-md flex flex-col justify-center items-center text-LIGHT_SLATE p-[5px]"
+                  className="cursor-pointer w-full h-[180px]"
                 >
-                  <div className="text-xl font-bold w-full overflow-hidden whitespace-nowrap text-ellipsis">
-                    {curation.name}
-                  </div>
-                  <div className="w-full overflow-hidden whitespace-nowrap text-ellipsis">
-                    {curation.content}
-                  </div>
-                  <span>{curation.likeCount}개의 좋아요가 있어요💜</span>
+                  <Card className="max-w-[350px]">
+                    <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      {curation.name}
+                    </h5>
+                    <p className="font-normal text-gray-700 dark:text-gray-400">
+                      {curation.content}
+                    </p>
+                    <p className="font-normal text-gray-700 dark:text-gray-400">
+                      {curation.likeCount}
+                      <Heart />
+                    </p>
+                  </Card>
                 </Link>
               ))}
             {query && (
               <div>
                 {queryCurationData?.curations?.map((curation) => (
                   <Link
-                    to={`/curation-maps`}
+                    to={`/curation-maps/${curation.id + ''}`}
                     search={{ id: curation.id }}
                     key={curation.id}
                     className="cursor-pointer w-full h-[180px] bg-WHITE rounded-md flex flex-col justify-center items-center text-LIGHT_SLATE p-[5px]"
@@ -71,11 +82,10 @@ export const CurationMap = () => {
                 ))}
               </div>
             )}
+            <div ref={target}></div>
           </div>
         ))}
       </div>
-
-      <div ref={target}></div>
     </main>
   )
 }

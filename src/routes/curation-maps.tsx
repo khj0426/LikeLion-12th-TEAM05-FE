@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { CurationMap } from '@/pages/curationMap';
-import { ErrorBoundary } from 'react-error-boundary';
+import { createFileRoute } from '@tanstack/react-router'
+import { CurationMap } from '@/pages/curationMap'
+import { ErrorBoundary } from 'react-error-boundary'
 
-import { Suspense, useState } from 'react';
-import { Alert, Spinner } from 'flowbite-react';
+import { Suspense, useState } from 'react'
+import { Alert, Spinner } from 'flowbite-react'
 export const Route = createFileRoute('/curation-maps')({
   component: () => {
     return (
@@ -22,6 +22,6 @@ export const Route = createFileRoute('/curation-maps')({
           <CurationMap></CurationMap>
         </Suspense>
       </ErrorBoundary>
-    );
+    )
   },
-});
+})

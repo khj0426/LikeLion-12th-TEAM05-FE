@@ -1,17 +1,14 @@
-import {
-  createFileRoute,
-  Link,
-  redirect,
-  useNavigate,
-} from '@tanstack/react-router'
-import { useState } from 'react'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+
 import { Button, Input } from '@/_components'
+import { useContext } from 'react'
+import { CurationSelectContext } from '@/_context/curationSelectContext'
 import { useCuration } from '@/_hooks/mutation/useCuration'
 import Swal from 'sweetalert2'
 
 export const Route = createFileRoute('/curation-select')({
   beforeLoad: () => {
-    if (!localStorage.getItem('accessToken')) {
+    if (!sessionStorage.getItem('accessToken')) {
       Swal.fire('로그인이 필요합니다!')
       throw redirect({
         to: '/login',
@@ -22,13 +19,45 @@ export const Route = createFileRoute('/curation-select')({
     }
   },
   component: () => {
+    const curation = useContext(CurationSelectContext)
     const navigate = useNavigate({
       from: '/curation-select',
     })
     const { mutate } = useCuration()
-    const [qurationName, setQurationName] = useState('')
-    const [qurationDescription, setQurationDescription] = useState('')
-    const [qurationId, setQurationId] = useState('')
+
+    const handleButtonClick = () => {
+      if (curation.id) {
+        navigate({
+          to: '/curation-create',
+          search: {
+            name: curation.title,
+            id: curation.id,
+            content: curation.content,
+          },
+        })
+        return
+      }
+
+      mutate(
+        { name: curation.title, content: curation.content },
+        {
+          onSuccess: (data) => {
+            curation?.setCurationSelect?.({
+              ...curation,
+              id: data?.id + '',
+            })
+            navigate({
+              to: '/curation-create',
+              search: {
+                name: curation.title,
+                id: data?.id,
+                content: curation.content,
+              },
+            })
+          },
+        },
+      )
+    }
 
     return (
       <main className="relative flex flex-col max-h-[700px] justify-center items-center gap-[50px] p-5">
@@ -41,7 +70,12 @@ export const Route = createFileRoute('/curation-select')({
               id="qurationName"
               className="w-[350px] mt-2"
               placeholder="ex)일산 산책로 맛집"
-              onChange={(e) => setQurationName(e.target.value)}
+              onChange={(e) =>
+                curation?.setCurationSelect?.({
+                  ...curation,
+                  title: e.target.value,
+                })
+              }
             />
           </label>
         </div>
@@ -53,8 +87,12 @@ export const Route = createFileRoute('/curation-select')({
               id="qurationDescription"
               placeholder="ex)파주,일산러의 파주 일산 산책로 모음집"
               className="w-[350px] mt-2"
-              value={qurationDescription}
-              onChange={(e) => setQurationDescription(e.target.value)}
+              onChange={(e) =>
+                curation.setCurationSelect?.({
+                  ...curation,
+                  content: e.target.value,
+                })
+              }
             />
           </label>
         </div>
@@ -62,45 +100,7 @@ export const Route = createFileRoute('/curation-select')({
         <div className="flex flex-col gap-[15px] w-full max-w-[400px]">
           <label htmlFor="curationPlace" className="flex flex-col">
             산책로 장소
-            <Button
-              variant={'primary'}
-              size="xl"
-              onClick={() => {
-                if (qurationId) {
-                  navigate({
-                    to: '/curation-create',
-                    search: {
-                      name: qurationName,
-                      id: qurationId,
-                      content: qurationDescription,
-                    },
-                  })
-                  return
-                }
-                if (!qurationId) {
-                  mutate(
-                    { name: qurationName, content: qurationDescription },
-                    {
-                      onSuccess: (data) => {
-                        setQurationId(() => data?.id + '')
-                        navigate({
-                          to: '/curation-create',
-                          search: {
-                            name: qurationName,
-                            id: data?.id,
-                            content: qurationDescription,
-                          },
-                        })
-                      },
-
-                      /*에러처리*/
-
-                      onError: () => setQurationId('asd'),
-                    },
-                  )
-                }
-              }}
-            >
+            <Button variant={'primary'} size="xl" onClick={handleButtonClick}>
               산책로 추가하러 가기
             </Button>
           </label>
