@@ -4,6 +4,7 @@ import { useGeolocation } from '@/_hooks'
 import { createMap, createSwalInput } from '@/_utils'
 import { Button } from '@/_components/button'
 import { Input } from '@/_components/input'
+import { useNavigate } from '@tanstack/react-router'
 import { Pagination } from 'flowbite-react'
 import { usePostCurationLocation } from '@/_hooks/mutation'
 import Swal from 'sweetalert2'
@@ -58,6 +59,7 @@ export const LocationSearch = ({
   lat = 37.566826,
   lng = 126.9786567,
 }: LocationSearchProps) => {
+  const navigate = useNavigate()
   const { mutate } = usePostCurationLocation()
   const curationId = Number(new URLSearchParams(window.location.href).get('id'))
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([])
@@ -240,15 +242,16 @@ export const LocationSearch = ({
                           '',
                           '장소에 대해 설명을 적어주세요',
                         ).then((val) => {
-                          setSelectedLocations([
-                            ...selectedLocations,
-                            {
-                              name: eachPlace.place_name,
-                              description: val?.value,
-                              address: eachPlace.road_address_name,
-                              locationImage: val?.image,
-                            },
-                          ])
+                          if (typeof val === 'object' && val !== null)
+                            setSelectedLocations([
+                              ...selectedLocations,
+                              {
+                                name: eachPlace.place_name,
+                                description: val?.value,
+                                address: eachPlace.road_address_name,
+                                locationImage: val?.image,
+                              },
+                            ])
                         })
                       }}
                     >
@@ -341,14 +344,27 @@ export const LocationSearch = ({
             cancelButtonText: '취소하기',
           }).then((res) => {
             if (res.isConfirmed) {
-              mutate({
-                locationId: 1,
-                locationImage: selectedLocations[0].locationImage,
-                name: selectedLocations[0].name,
-                description: selectedLocations[0].description,
-                address: selectedLocations[0].address,
-                curationId,
-              })
+              selectedLocations.forEach(
+                ({ name, description, locationImage, address }) => {
+                  mutate(
+                    {
+                      name,
+                      description,
+                      address,
+                      locationImage,
+                      curationId,
+                    },
+                    {
+                      onSuccess: () => {
+                        Swal.fire('큐레이션이 생성되었어요!')
+                        navigate({
+                          to: '/',
+                        })
+                      },
+                    },
+                  )
+                },
+              )
             }
           })
         }}

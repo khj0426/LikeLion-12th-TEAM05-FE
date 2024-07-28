@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
-import { components } from '../../../../schema'
 import axios from 'axios'
+import { components } from '../../../../schema'
 
 type APIRequest = components['schemas']['LocationInfoResDto']
 type APIResponse =
@@ -9,9 +9,17 @@ type APIResponse =
 const postCurationLocation = async (req: APIRequest) => {
   try {
     const formData = new FormData()
-    formData.append('location[name]', req.name ?? '')
-    formData.append('location[description]', req.description ?? '')
-    formData.append('location[address]', req.address ?? '')
+
+    const obj = {
+      name: req.name,
+      description: req.description,
+      address: req.address,
+    }
+    formData.append('location', JSON.stringify(obj))
+
+    if (req.locationImage) {
+      formData.append('locationImage', req.locationImage)
+    }
 
     const response = await axios.post<APIResponse['data']>(
       `https://hayeongyou.shop/location/${req.curationId}`,
@@ -23,7 +31,7 @@ const postCurationLocation = async (req: APIRequest) => {
         withCredentials: true,
       },
     )
-    console.log(response)
+
     return response.data
   } catch (e) {
     console.log(e)

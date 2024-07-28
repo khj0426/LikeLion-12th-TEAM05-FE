@@ -49,16 +49,21 @@ export function createSwalInput(
     const imageEL = document.getElementById('thumbnail') as HTMLImageElement
     const file = imageData?.files && imageData?.files[0]
 
-    console.log(file, imageData, reader)
-    reader.onload = (e) => {
-      console.log(e)
-      imageEL.src = e.target?.result as string
-    }
     if (file) {
-      reader.readAsDataURL(file)
+      return new Promise((resolve) => {
+        reader.onload = (e) => {
+          imageEL.src = e.target?.result as string
+          resolve({
+            value: result.value,
+            image: reader.result as string,
+          } as const)
+        }
+        reader.readAsDataURL(file)
+      })
     }
 
     if (result.isConfirmed) {
+      console.log(reader.result)
       return { value: result.value, image: reader.result as string }
     }
     return null // 취소된 경우 null 반환

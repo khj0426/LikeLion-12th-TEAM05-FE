@@ -7,8 +7,8 @@ interface useInfinityQueryObserverProps {
   fetchNextPage: () => Promise<InfiniteQueryObserverResult>
 }
 export const useInfinityQueryObserver = ({
-  threshold = 1,
-  hasNextPage,
+  threshold,
+  hasNextPage = true,
   fetchNextPage,
 }: useInfinityQueryObserverProps) => {
   const target = useRef<HTMLDivElement | null>(null)
@@ -34,7 +34,7 @@ export const useInfinityQueryObserver = ({
     observer.observe(target.current)
 
     return () => observer.disconnect()
-  }, [])
+  }, [target, target.current, hasNextPage, fetchNextPage])
 
   return {
     target,
