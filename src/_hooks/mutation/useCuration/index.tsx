@@ -20,5 +20,6 @@ export const postCuration = async ({ name, content }: APIRequest) => {
 export const useCuration = () => {
   return useMutation({
     mutationFn: postCuration,
+    onSuccess: () => {},
   })
 }

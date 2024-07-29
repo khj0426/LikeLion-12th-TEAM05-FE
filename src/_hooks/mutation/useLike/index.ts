@@ -5,6 +5,7 @@ import { axiosClient } from '@/services'
 type APIResponse = components['schemas']['ApiResponseTemplateString']
 
 const postLikeCuration = async ({ curationId }: { curationId: string }) => {
+  console.log(curationId)
   try {
     const response = await axiosClient.post<APIResponse>(
       `/${curationId}/like`,

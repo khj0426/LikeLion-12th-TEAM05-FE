@@ -14,11 +14,7 @@ export const Route = createFileRoute('/curation-maps')({
           </Alert>
         }
       >
-        <Suspense
-          fallback={
-            <Spinner aria-label="Extra large spinner example" size="xl" />
-          }
-        >
+        <Suspense fallback={<></>}>
           <CurationMap></CurationMap>
         </Suspense>
       </ErrorBoundary>
