@@ -4,7 +4,11 @@ import MainBanner from '../../public/mainbanner.svg?react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Card, Carousel } from 'flowbite-react'
 
-import { PopluarCurations, RecentCurations } from '@/pages/landing'
+import {
+  PopluarCurations,
+  RecentCurations,
+  PopluarCurators,
+} from '@/pages/landing'
 import { Spinner } from 'flowbite-react'
 import { Button } from '@/_components'
 import { Suspense } from 'react'
@@ -36,11 +40,16 @@ export const Route = createFileRoute('/')({
         <section className="flex flex-col gap-[25px] w-[80%] m-auto">
           <h2 className="font-bold text-2xl">👼인기 있는 큐레이터</h2>
           <h3 className="text-xl">지금 인기 있는 큐레이터를 만나보세요!</h3>
-          <Card className="max-w-[150px]">
-            <p className="font-normal text-gray-700 dark:text-gray-400">
-              ㅁㄴㅇ
-            </p>
-          </Card>
+
+          <ErrorBoundary fallback={<></>}>
+            <Suspense
+              fallback={
+                <Spinner aria-label="Extra large spinner example" size="xl" />
+              }
+            >
+              <PopluarCurators></PopluarCurators>
+            </Suspense>
+          </ErrorBoundary>
         </section>
 
         <section className="my-[120px] mx-auto flex flex-col gap-[25px] w-[80%] ">

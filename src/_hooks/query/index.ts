@@ -6,3 +6,4 @@ export {
 export { useGetCuration } from './useGetCuration'
 export { useGetQurationBySearch } from './useGetQurationSearch'
 export { useGetRecentCuration } from './useGetRecentCuration'
+export { useGetPopluarCurators } from './useGetPopluarCurator'

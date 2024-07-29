@@ -108,6 +108,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/user/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 사용자 정보 수정
+         * @description 사용자의 정보(이름, 이메일, 비밀번호)를 수정합니다.
+         */
+        patch: operations["userInfoUpdate"];
+        trace?: never;
+    };
     "/location/{locationId}": {
         parameters: {
             query?: never;
@@ -127,7 +147,7 @@ export interface paths {
         head?: never;
         /**
          * 인증된 사용자가 위치 수정
-         * @description 인증된 사용자가 위치를 수정(위치 이름, 이미지)합니다.
+         * @description 인증된 사용자가 위치를 수정(위치 이름, 이미지(선택), 주소)합니다.
          */
         patch: operations["locationUpdate"];
         trace?: never;
@@ -139,7 +159,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * 모든 사용자가 큐레이션 하나씩 조회
+         * @description 모든 사용자가 산책로 지도 페이지에서 큐레이션 한 개씩 조회합니다.
+         */
+        get: operations["curationFindOne"];
         put?: never;
         post?: never;
         /**
@@ -154,6 +178,26 @@ export interface paths {
          * @description 인증된 사용자가 산책로 지도 페이지에서 큐레이션을 수정(큐레이션 제목, 설명)합니다.
          */
         patch: operations["curationUpdate"];
+        trace?: never;
+    };
+    "/user/popular": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 모든 사용자가 큐레이션을 가장 많이 작성한 6명의 큐레이터 조회
+         * @description 모든 사용자는 랜딩 페이지에서 큐레이션을 가장 많이 작성한 6명의 큐레이터를 볼 수 있습니다.
+         */
+        get: operations["findByOrderByCurationsCurationCountDesc"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/test": {
@@ -259,7 +303,7 @@ export interface paths {
          * 모든 사용자가 최신순으로 정렬된 큐레이션 6개 조회
          * @description 모든 사용자가 랜딩페이지에서 최신순으로 정렬된 6개의 큐레이션을 조회합니다.
          */
-        get: operations["findTop6byOrderByCreateDateDesc"];
+        get: operations["findTop6ByOrderByCreateDateDesc"];
         put?: never;
         post?: never;
         delete?: never;
@@ -312,16 +356,16 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        ApiResponseTemplate: {
+        ApiResponseTemplateString: {
             status?: string;
             message?: string;
-            data?: Record<string, never>;
+            data?: string;
         };
         ApiResponseTemplateSuccessCode: {
             status?: string;
             message?: string;
             /** @enum {string} */
-            data?: "GET_SUCCESS" | "LOCATION_UPDATE_SUCCESS" | "CURATION_UPDATE_SUCCESS" | "LOCATION_DELETE_SUCCESS" | "CURATION_DELETE_SUCCESS" | "LIKE_DELETE_SUCCESS" | "USER_SIGNUP_SUCCESS" | "USER_LOGIN_SUCCESS" | "LOCATION_SAVE_SUCCESS" | "CURATION_SAVE_SUCCESS" | "LIKE_SAVE_SUCCESS";
+            data?: "GET_SUCCESS" | "LOCATION_UPDATE_SUCCESS" | "CURATION_UPDATE_SUCCESS" | "LOCATION_DELETE_SUCCESS" | "CURATION_DELETE_SUCCESS" | "LIKE_DELETE_SUCCESS" | "USER_SIGNUP_SUCCESS" | "USER_LOGIN_SUCCESS" | "USER_INFO_UPDATE_SUCCESS" | "LOCATION_SAVE_SUCCESS" | "CURATION_SAVE_SUCCESS" | "LIKE_SAVE_SUCCESS";
         };
         UserSignUpReqDto: {
             name: string;
@@ -331,11 +375,6 @@ export interface components {
             refreshToken?: string;
             /** @enum {string} */
             role?: "ROLE_USER";
-        };
-        ApiResponseTemplateString: {
-            status?: string;
-            message?: string;
-            data?: string;
         };
         UserSignInReqDto: {
             email: string;
@@ -392,6 +431,23 @@ export interface components {
             createDate?: string;
             /** Format: int32 */
             likeCount?: number;
+            locations?: components["schemas"]["LocationInfoResDto"][];
+        };
+        UserInfoUpdateReqDto: {
+            name: string;
+            password: string;
+            email: string;
+        };
+        ApiResponseTemplateUserInfoResDto: {
+            status?: string;
+            message?: string;
+            data?: components["schemas"]["UserInfoResDto"];
+        };
+        UserInfoResDto: {
+            /** Format: int64 */
+            userId?: number;
+            name?: string;
+            email?: string;
         };
         LocationUpdateReqDto: {
             name?: string;
@@ -401,6 +457,19 @@ export interface components {
         CurationUpdateReqDto: {
             name?: string;
             content?: string;
+        };
+        ApiResponseTemplateUserPopularListResDto: {
+            status?: string;
+            message?: string;
+            data?: components["schemas"]["UserPopularListResDto"];
+        };
+        UserPopularInfoResDto: {
+            name?: string;
+            /** Format: int32 */
+            curationCount?: number;
+        };
+        UserPopularListResDto: {
+            userPopular?: components["schemas"]["UserPopularInfoResDto"][];
         };
         GoogleToken: {
             accessToken?: string;
@@ -456,7 +525,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -466,15 +535,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -521,15 +581,6 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
-                };
-            };
         };
     };
     userSignIn: {
@@ -560,7 +611,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -570,15 +621,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateUserSignInResDto"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -597,7 +639,7 @@ export interface operations {
                 "multipart/form-data": {
                     location: components["schemas"]["LocationSaveReqDto"];
                     /** Format: binary */
-                    locationImage: string;
+                    locationImage?: string;
                 };
             };
         };
@@ -617,7 +659,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -627,15 +669,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -668,7 +701,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 서버 내부 오류입니다. */
@@ -677,7 +710,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
                 };
             };
         };
@@ -719,7 +752,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -731,13 +764,46 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+        };
+    };
+    userInfoUpdate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserInfoUpdateReqDto"];
+            };
+        };
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateUserInfoResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateUserInfoResDto"];
                 };
             };
         };
@@ -780,15 +846,6 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
-                };
-            };
         };
     };
     locationUpdate: {
@@ -805,7 +862,7 @@ export interface operations {
                 "multipart/form-data": {
                     location: components["schemas"]["LocationUpdateReqDto"];
                     /** Format: binary */
-                    locationImage: string;
+                    locationImage?: string;
                 };
             };
         };
@@ -825,7 +882,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -837,13 +894,44 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateLocationInfoResDto"];
                 };
             };
-            /** @description Internal Server Error */
+        };
+    };
+    curationFindOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                curationId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 서버 내부 오류입니다. */
             500: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
                 };
             };
         };
@@ -874,7 +962,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -884,15 +972,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -927,7 +1006,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -939,13 +1018,42 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplateCurationInfoResDto"];
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+        };
+    };
+    findByOrderByCurationsCurationCountDesc: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateUserPopularListResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateUserPopularListResDto"];
                 };
             };
         };
@@ -968,13 +1076,13 @@ export interface operations {
                     "*/*": string;
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
         };
@@ -997,13 +1105,13 @@ export interface operations {
                     "*/*": string;
                 };
             };
-            /** @description Internal Server Error */
-            500: {
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
         };
@@ -1034,7 +1142,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleToken"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -1044,15 +1152,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["GoogleToken"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -1081,7 +1180,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateLocationListResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -1091,15 +1190,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateLocationListResDto"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -1130,7 +1220,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 서버 내부 오류입니다. */
@@ -1139,12 +1229,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
                 };
             };
         };
     };
-    findTop6byOrderByCreateDateDesc: {
+    findTop6ByOrderByCreateDateDesc: {
         parameters: {
             query?: never;
             header?: never;
@@ -1168,7 +1258,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 서버 내부 오류입니다. */
@@ -1177,7 +1267,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
                 };
             };
         };
@@ -1206,7 +1296,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 서버 내부 오류입니다. */
@@ -1215,7 +1305,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
                 };
             };
         };
@@ -1246,7 +1336,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
             /** @description 인증이 필요합니다. */
@@ -1256,15 +1346,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateSuccessCode"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
