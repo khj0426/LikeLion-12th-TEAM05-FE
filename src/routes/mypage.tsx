@@ -4,6 +4,7 @@ import { Input, Button } from '@/_components'
 import { UserContext } from '@/_context/userInfoContext'
 import { useContext, useState } from 'react'
 import Swal from 'sweetalert2'
+import { useGetLikedCuration } from '@/_hooks/query'
 import { loginSchema } from '@/pages/login/loginForm'
 import { z, ZodError } from 'zod'
 import { useChangeUserInfo } from '@/_hooks/mutation'
@@ -30,6 +31,8 @@ export const Route = createFileRoute('/mypage')({
       email,
       password: '',
     })
+    const { data: likedCurations } = useGetLikedCuration()
+    console.log(likedCurations)
     return (
       <main className="w-[80%] mx-auto my-4">
         <header className="flex justify-center mb-4">
@@ -43,7 +46,13 @@ export const Route = createFileRoute('/mypage')({
 
           <article className="flex flex-col text-center justify-center mx-auto">
             <h3 className="font-bold text-xl">🦎 내가 좋아하는 산책로</h3>
-            <Card className="bg-white w-[250px] h-[300px] flex justify-center items-center"></Card>
+            <Card className="bg-white w-[250px] h-[300px] flex justify-center items-center">
+              {likedCurations?.curations?.map((curation) => (
+                <div key={curation.id} className="text-black">
+                  {curation.content}
+                </div>
+              ))}
+            </Card>
           </article>
 
           <article className="flex flex-col text-center justify-center mx-auto">

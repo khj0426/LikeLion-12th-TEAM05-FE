@@ -11,3 +11,4 @@ export {
   useCurationDetailInfo,
   getCurationDetail,
 } from './useGetCurationDetails'
+export { useGetLikedCuration } from './useGetLikedCuration'
