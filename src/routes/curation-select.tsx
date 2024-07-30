@@ -1,5 +1,6 @@
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
+import { useNavigate } from '@tanstack/react-router'
 import { Button, Input } from '@/_components'
 import { useContext } from 'react'
 import { CurationSelectContext } from '@/_context/curationSelectContext'

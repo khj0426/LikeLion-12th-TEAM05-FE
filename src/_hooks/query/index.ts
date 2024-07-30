@@ -7,3 +7,7 @@ export { useGetCuration } from './useGetCuration'
 export { useGetQurationBySearch } from './useGetQurationSearch'
 export { useGetRecentCuration } from './useGetRecentCuration'
 export { useGetPopluarCurators } from './useGetPopluarCurator'
+export {
+  useCurationDetailInfo,
+  getCurationDetail,
+} from './useGetCurationDetails'

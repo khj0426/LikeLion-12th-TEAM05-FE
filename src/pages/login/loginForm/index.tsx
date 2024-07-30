@@ -108,6 +108,7 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
                           name: data.name ?? '',
                           email: data.email ?? '',
                         })
+                        sessionStorage.setItem('walkmate-name', data.name ?? '')
                         sessionStorage.setItem(
                           'accessToken',
                           data.accessToken ?? '',

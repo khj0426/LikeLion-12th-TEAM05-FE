@@ -359,6 +359,7 @@ export const LocationSearch = ({
                         Swal.fire('큐레이션이 생성되었어요!')
                         navigate({
                           to: '/',
+                          resetScroll: true,
                         })
                       },
                     },

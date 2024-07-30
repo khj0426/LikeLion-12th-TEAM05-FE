@@ -12,7 +12,12 @@ export const RecentCurations = () => {
           key={curation.id}
           className="w-64 max-h-[300px] cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300"
         >
-          <Link to={`/curation-maps/${curation.id}`}>
+          <Link
+            to={`/curation-detail`}
+            search={{
+              id: curation.id,
+            }}
+          >
             <h5 className="text-xl font-semibold text-gray-900 dark:text-white">
               {curation.name}
             </h5>
@@ -39,7 +44,12 @@ export const PopluarCurations = () => {
           className="w-64 max-h-[300px] cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300"
           key={curation.id}
         >
-          <Link to={`/curation-maps/${curation.id}`}>
+          <Link
+            to={`/curation-detail`}
+            search={{
+              id: curation.id,
+            }}
+          >
             <h5 className="text-xl font-semibold text-gray-900 dark:text-white">
               {curation.name}
             </h5>

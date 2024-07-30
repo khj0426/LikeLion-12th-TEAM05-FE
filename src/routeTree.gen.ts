@@ -16,9 +16,9 @@ import { Route as MypageImport } from './routes/mypage'
 import { Route as LoginImport } from './routes/login'
 import { Route as CurationSelectImport } from './routes/curation-select'
 import { Route as CurationMapsImport } from './routes/curation-maps'
+import { Route as CurationDetailImport } from './routes/curation-detail'
 import { Route as CurationCreateImport } from './routes/curation-create'
 import { Route as IndexImport } from './routes/index'
-import { Route as CurationMapsCurationidImport } from './routes/curation-maps.$curationid'
 
 // Create/Update Routes
 
@@ -47,6 +47,11 @@ const CurationMapsRoute = CurationMapsImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CurationDetailRoute = CurationDetailImport.update({
+  path: '/curation-detail',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const CurationCreateRoute = CurationCreateImport.update({
   path: '/curation-create',
   getParentRoute: () => rootRoute,
@@ -55,11 +60,6 @@ const CurationCreateRoute = CurationCreateImport.update({
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any)
-
-const CurationMapsCurationidRoute = CurationMapsCurationidImport.update({
-  path: '/$curationid',
-  getParentRoute: () => CurationMapsRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -78,6 +78,13 @@ declare module '@tanstack/react-router' {
       path: '/curation-create'
       fullPath: '/curation-create'
       preLoaderRoute: typeof CurationCreateImport
+      parentRoute: typeof rootRoute
+    }
+    '/curation-detail': {
+      id: '/curation-detail'
+      path: '/curation-detail'
+      fullPath: '/curation-detail'
+      preLoaderRoute: typeof CurationDetailImport
       parentRoute: typeof rootRoute
     }
     '/curation-maps': {
@@ -115,13 +122,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SigninImport
       parentRoute: typeof rootRoute
     }
-    '/curation-maps/$curationid': {
-      id: '/curation-maps/$curationid'
-      path: '/$curationid'
-      fullPath: '/curation-maps/$curationid'
-      preLoaderRoute: typeof CurationMapsCurationidImport
-      parentRoute: typeof CurationMapsImport
-    }
   }
 }
 
@@ -130,9 +130,8 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
   CurationCreateRoute,
-  CurationMapsRoute: CurationMapsRoute.addChildren({
-    CurationMapsCurationidRoute,
-  }),
+  CurationDetailRoute,
+  CurationMapsRoute,
   CurationSelectRoute,
   LoginRoute,
   MypageRoute,
@@ -149,6 +148,7 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/curation-create",
+        "/curation-detail",
         "/curation-maps",
         "/curation-select",
         "/login",
@@ -162,11 +162,11 @@ export const routeTree = rootRoute.addChildren({
     "/curation-create": {
       "filePath": "curation-create.tsx"
     },
+    "/curation-detail": {
+      "filePath": "curation-detail.tsx"
+    },
     "/curation-maps": {
-      "filePath": "curation-maps.tsx",
-      "children": [
-        "/curation-maps/$curationid"
-      ]
+      "filePath": "curation-maps.tsx"
     },
     "/curation-select": {
       "filePath": "curation-select.tsx"
@@ -179,10 +179,6 @@ export const routeTree = rootRoute.addChildren({
     },
     "/signin": {
       "filePath": "signin.tsx"
-    },
-    "/curation-maps/$curationid": {
-      "filePath": "curation-maps.$curationid.tsx",
-      "parent": "/curation-maps"
     }
   }
 }

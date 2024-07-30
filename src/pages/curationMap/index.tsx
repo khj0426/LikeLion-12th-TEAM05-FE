@@ -4,6 +4,7 @@ import { Link } from '@tanstack/react-router'
 import { useGetCuration, useGetQurationBySearch } from '@/_hooks/query'
 import { useInfinityQueryObserver } from '@/_hooks'
 import { useLikeCuration } from '@/_hooks/mutation'
+import { useNavigate } from '@tanstack/react-router'
 import { useState, useRef } from 'react'
 import { Card } from 'flowbite-react'
 
@@ -21,6 +22,7 @@ export const CurationMap = () => {
     fetchNextPage: fetchNextPage,
     hasNextPage,
   })
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const { data: queryCurationData, refetch: refetchQurationByQuery } =
     useGetQurationBySearch(query)
@@ -66,6 +68,12 @@ export const CurationMap = () => {
       <div className="flex flex-wrap justify-center gap-4 w-full">
         {queryCurationData?.curations?.map((curation, index) => (
           <Card
+            onClick={() =>
+              navigate({
+                to: '/curation-detail',
+                search: { id: curation.id },
+              })
+            }
             key={index}
             className="w-[350px] h-[200px] shadow-lg hover:shadow-xl transition-shadow duration-200 mb-4 flex flex-col justify-between"
           >
@@ -88,7 +96,15 @@ export const CurationMap = () => {
           data?.pages?.flat()?.map((item, index) =>
             item?.response?.data?.curations?.map((curation) => (
               <div key={index}>
-                <Card className="w-[350px] h-[200px] shadow-lg hover:shadow-xl transition-shadow duration-200 mb-4 flex flex-col justify-between">
+                <Card
+                  className="w-[350px] h-[200px] shadow-lg hover:shadow-xl transition-shadow duration-200 mb-4 flex flex-col justify-between"
+                  onClick={() =>
+                    navigate({
+                      to: '/curation-detail',
+                      search: { id: curation.id },
+                    })
+                  }
+                >
                   <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                     {curation.name}
                   </h5>

@@ -13,14 +13,18 @@ type UserContextProps = Pick<
   components['schemas']['UserSignUpReqDto'],
   'name' | 'email'
 > & {
-  setUserInfo?: Dispatch<SetStateAction<UserContextProps | undefined>>
+  setUserInfo?: Dispatch<SetStateAction<UserContextProps>>
 }
 export const UserContext = createContext<UserContextProps>(
   {} as UserContextProps,
 )
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
-  const [userInfo, setUserInfo] = useState<UserContextProps>()
+  const sessionUserInfo = sessionStorage.getItem('walkmate-name') as string
+  const [userInfo, setUserInfo] = useState<UserContextProps>({
+    name: sessionUserInfo,
+    email: '',
+  })
 
   const value = useMemo(() => {
     return {
@@ -29,5 +33,6 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
       setUserInfo,
     }
   }, [userInfo?.name])
+  console.log(value)
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
