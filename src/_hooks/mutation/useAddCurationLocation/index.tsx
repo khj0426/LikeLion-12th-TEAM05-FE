@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { components } from '../../../../schema'
+import { useQueryClient } from '@tanstack/react-query'
 
 type APIRequest = components['schemas']['LocationInfoResDto']
 type APIResponse =
@@ -40,7 +41,12 @@ const postCurationLocation = async (req: APIRequest) => {
 }
 
 export const usePostCurationLocation = () => {
+  const client = useQueryClient()
   return useMutation({
     mutationFn: postCurationLocation,
+    onSettled: () => {
+      client.resetQueries(['getRecentCuration'])
+      //쿼리 키 무효화
+    },
   })
 }
