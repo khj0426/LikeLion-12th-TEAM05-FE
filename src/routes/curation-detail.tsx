@@ -21,7 +21,7 @@ export const Route = createFileRoute('/curation-detail')({
       curationId: data.cutaionId + '',
       initCurationInfo: data.initalData,
     })
-    const [map, setMap] = useState<any>()
+    const [_map, setMap] = useState<any>()
 
     useEffect(() => {
       const newKakaoMap = createMap({

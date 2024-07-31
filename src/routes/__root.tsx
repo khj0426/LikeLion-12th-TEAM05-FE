@@ -1,8 +1,7 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
-import { NavBar, Button, Input } from '@/_components';
-import { DarkThemeToggle } from 'flowbite-react';
+import { NavBar } from '@/_components'
 
 export const Route = createRootRoute({
   component: () => (
@@ -12,4 +11,4 @@ export const Route = createRootRoute({
       <TanStackRouterDevtools />
     </main>
   ),
-});
+})

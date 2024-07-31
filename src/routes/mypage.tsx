@@ -114,7 +114,7 @@ export const Route = createFileRoute('/mypage')({
                 size="xs"
                 onClick={() => {
                   try {
-                    const zodParser = loginSchema.parse(formData)
+                    loginSchema.parse(formData)
                     mutate(
                       {
                         name: formData.name,

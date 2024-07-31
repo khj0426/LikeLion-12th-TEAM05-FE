@@ -1,6 +1,5 @@
 import Heart from '../../../public/heart.svg?react'
 import { Button, Input } from '@/_components'
-import { Link } from '@tanstack/react-router'
 import { useGetCuration, useGetQurationBySearch } from '@/_hooks/query'
 import { useInfinityQueryObserver } from '@/_hooks'
 import { useLikeCuration } from '@/_hooks/mutation'
@@ -10,7 +9,6 @@ import { Card } from 'flowbite-react'
 import Swal from 'sweetalert2'
 
 export const CurationMap = () => {
-  const hasLikeRef = useRef(false)
   const { mutate } = useLikeCuration()
   const {
     refetch: refetchCuration,

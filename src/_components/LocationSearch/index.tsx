@@ -55,7 +55,6 @@ interface Pagination {
 }
 
 export const LocationSearch = ({
-  onSelectLocation,
   lat = 37.566826,
   lng = 126.9786567,
 }: LocationSearchProps) => {
@@ -121,7 +120,7 @@ export const LocationSearch = ({
     })
   }, [query])
 
-  const addMarker = (position: any, title: string, index: number) => {
+  const addMarker = (position: any, _title: string, index: number) => {
     const marker = new window.kakao.maps.Marker({
       position,
       image: new window.kakao.maps.MarkerImage(
@@ -243,7 +242,6 @@ export const LocationSearch = ({
                           '',
                           '장소에 대해 설명을 적어주세요',
                         ).then((val) => {
-                          const image = new Blob()
                           console.log(val)
                           setSelectedLocations([
                             ...selectedLocations,

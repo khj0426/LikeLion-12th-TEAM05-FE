@@ -2,8 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { CurationMap } from '@/pages/curationMap'
 import { ErrorBoundary } from 'react-error-boundary'
 
-import { Suspense, useState } from 'react'
-import { Alert, Spinner } from 'flowbite-react'
+import { Suspense } from 'react'
+import { Alert } from 'flowbite-react'
 export const Route = createFileRoute('/curation-maps')({
   component: () => {
     return (

@@ -1,5 +1,5 @@
 import Walk from '../../../public/walk.svg?react'
-import { Navbar, Popover } from 'flowbite-react'
+import { Navbar } from 'flowbite-react'
 import { Link } from '@tanstack/react-router'
 import { useThemeMode } from 'flowbite-react'
 import { UserContext } from '@/_context/userInfoContext'

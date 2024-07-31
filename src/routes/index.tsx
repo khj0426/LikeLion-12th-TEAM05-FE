@@ -2,7 +2,7 @@ import MainBannerSecond from '../../public/mainbanner_2.svg?react'
 import MainBanner from '../../public/mainbanner.svg?react'
 
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Card, Carousel } from 'flowbite-react'
+import { Carousel } from 'flowbite-react'
 
 import {
   PopluarCurations,

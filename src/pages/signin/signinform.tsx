@@ -1,35 +1,32 @@
-import { useContext } from 'react';
-import Logo from '../../../public/login.svg?react';
-import { z, ZodError } from 'zod';
-import { ChangeEvent, useState } from 'react';
-import { Button, Input } from '@/_components';
-import { loginSchema } from '@/pages/login/loginForm';
-import Swal from 'sweetalert2';
-import { UserContext } from '@/_context/userInfoContext';
+import { useContext } from 'react'
+import Logo from '../../../public/login.svg?react'
+import { z, ZodError } from 'zod'
+import { ChangeEvent, useState } from 'react'
+import { Button, Input } from '@/_components'
+import { loginSchema } from '@/pages/login/loginForm'
+import Swal from 'sweetalert2'
+import { UserContext } from '@/_context/userInfoContext'
 
-import { useSignIn } from '@/_hooks/mutation';
-import { useNavigate } from '@tanstack/react-router';
-interface LoginFormProps {
-  onSubmit: (data: z.infer<typeof loginSchema>) => void;
-}
+import { useSignIn } from '@/_hooks/mutation'
+import { useNavigate } from '@tanstack/react-router'
 
 export const SignInForm = () => {
-  const { mutate } = useSignIn();
+  const { mutate } = useSignIn()
   const [formData, setFormData] = useState<z.infer<typeof loginSchema>>({
     name: '',
     email: '',
     password: '',
-  });
-  const navigate = useNavigate();
-  const { setUserInfo } = useContext(UserContext);
-  const [error, setError] = useState<ZodError | null>(null);
+  })
+  const navigate = useNavigate()
+  const { setUserInfo } = useContext(UserContext)
+  const [error, setError] = useState<ZodError | null>(null)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
-    }));
-  };
+    }))
+  }
 
   return (
     <section className="flex flex-col gap-4 p-5">
@@ -84,8 +81,8 @@ export const SignInForm = () => {
             <Button
               onClick={() => {
                 try {
-                  const a = loginSchema.parse(formData);
-                  setError(null);
+                  loginSchema.parse(formData)
+                  setError(null)
                   mutate(
                     {
                       name: formData.name,
@@ -98,20 +95,17 @@ export const SignInForm = () => {
                           setUserInfo({
                             name: formData.name,
                             email: formData.email,
-                          });
-                        Swal.fire('로그인에 성공했어요');
+                          })
+                        Swal.fire('로그인에 성공했어요')
                         navigate({
                           to: '/',
-                        });
+                        })
                       },
-                      onError: (error) => {
-                        /*토스트처리*/
-                      },
-                    }
-                  );
+                    },
+                  )
                 } catch (e) {
                   if (e instanceof ZodError) {
-                    setError(e);
+                    setError(e)
                   }
                 }
               }}
@@ -124,5 +118,5 @@ export const SignInForm = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}

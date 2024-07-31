@@ -61,7 +61,7 @@ export function createSwalInput(
       return new Promise<{ value: string; image?: File }>((resolve) => {
         if (file) {
           const reader = new FileReader()
-          reader.onload = async (e) => {
+          reader.onload = async () => {
             resolve({
               value: result.value as string,
               image: file,
