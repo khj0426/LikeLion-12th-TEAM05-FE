@@ -1,6 +1,7 @@
 import { components } from '../../../../schema'
 import { useMutation } from '@tanstack/react-query'
 import { axiosClient } from '@/services'
+import { postLogin } from '@/_hooks/mutation/useLogin'
 import { AxiosError } from 'axios'
 
 type APIResponse = components['schemas']['UserSignInResDto']
@@ -19,6 +20,14 @@ export const postSignIn = async ({
       role,
       password,
     })
+    const loginResponse = await postLogin({
+      email,
+      password,
+    })
+
+    sessionStorage.setItem('accessToken', loginResponse.accessToken ?? '')
+    sessionStorage.setItem('refreshToken', loginResponse?.refreshToken ?? '')
+
     return response.data
   } catch (e) {
     if (e instanceof AxiosError) {

@@ -7,6 +7,7 @@ import { useLikeCuration } from '@/_hooks/mutation'
 import { useNavigate } from '@tanstack/react-router'
 import { useState, useRef } from 'react'
 import { Card } from 'flowbite-react'
+import Swal from 'sweetalert2'
 
 export const CurationMap = () => {
   const hasLikeRef = useRef(false)
@@ -39,9 +40,14 @@ export const CurationMap = () => {
     mutate(
       { curationId: curationId + '' },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           refetchCuration()
           refetchQurationByQuery()
+          if (data.status === 'error') {
+            Swal.fire('이미 좋아요를 눌렀습니다!')
+            return
+          }
+          Swal.fire('좋아요를 눌렀어요')
         },
       },
     )
@@ -86,8 +92,12 @@ export const CurationMap = () => {
             <p className="font-normal text-gray-700 dark:text-gray-400 flex items-center">
               {curation.likeCount}{' '}
               <Heart
-                className="ml-1"
-                onClick={() => handleOnClickHeart({ curationId: curation.id })}
+                className="ml-1 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleOnClickHeart({ curationId: curation.id })
+                }}
               />
             </p>
           </Card>

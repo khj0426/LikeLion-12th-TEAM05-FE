@@ -1,6 +1,5 @@
 import type { ClassValue } from 'clsx'
 import { clsx } from 'clsx'
-import { ChangeEvent } from 'react'
 import Swal from 'sweetalert2'
 import { twMerge } from 'tailwind-merge'
 
@@ -40,32 +39,41 @@ export function createSwalInput(
     showCancelButton: true,
     confirmButtonText: '제출',
     cancelButtonText: '취소',
-    html: `<input type = "file" id ="image" accept = "image/png ,image/jpeg" /><img id = "thumbnail" src = "" width = {150} height = {150}
-    style = {{object-fit:cover}}
-    />`,
+    html: `
+      <input type="file" id="image" accept="image/png, image/jpeg" />
+      <img id="thumbnail" src="" width="150" height="150" style="object-fit:cover; display:none;" />
+    `,
   }).then((result) => {
-    const reader = new FileReader()
     const imageData = document.getElementById('image') as HTMLInputElement
     const imageEL = document.getElementById('thumbnail') as HTMLImageElement
-    const file = imageData?.files && imageData?.files[0]
+    const file = imageData?.files && imageData.files[0]
 
     if (file) {
-      return new Promise((resolve) => {
-        reader.onload = (e) => {
-          imageEL.src = e.target?.result as string
-          resolve({
-            value: result.value,
-            image: reader.result as string,
-          } as const)
-        }
-        reader.readAsDataURL(file)
-      })
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        imageEL.src = e.target?.result as string
+        imageEL.style.display = 'block' // 미리보기 이미지 표시
+      }
+      reader.readAsDataURL(file)
     }
 
     if (result.isConfirmed) {
-      console.log(reader.result)
-      return { value: result.value, image: reader.result as string }
+      return new Promise<{ value: string; image?: File }>((resolve) => {
+        if (file) {
+          const reader = new FileReader()
+          reader.onload = async (e) => {
+            resolve({
+              value: result.value as string,
+              image: file,
+            })
+          }
+          reader.readAsDataURL(file)
+        } else {
+          resolve({ value: result.value as string })
+        }
+      })
     }
-    return null // 취소된 경우 null 반환
+
+    return null
   })
 }

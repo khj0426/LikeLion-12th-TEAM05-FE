@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { Card } from 'flowbite-react'
 import { Input, Button } from '@/_components'
 import { UserContext } from '@/_context/userInfoContext'
@@ -32,7 +32,6 @@ export const Route = createFileRoute('/mypage')({
       password: '',
     })
     const { data: likedCurations } = useGetLikedCuration()
-    console.log(likedCurations)
     return (
       <main className="w-[80%] mx-auto my-4">
         <header className="flex justify-center mb-4">
@@ -46,10 +45,21 @@ export const Route = createFileRoute('/mypage')({
 
           <article className="flex flex-col text-center justify-center mx-auto">
             <h3 className="font-bold text-xl">🦎 내가 좋아하는 산책로</h3>
-            <Card className="bg-white w-[250px] h-[300px] flex justify-center items-center">
+            <Card className="bg-white w-[250px] h-[300px] flex justify-center items-center overflow-scroll">
               {likedCurations?.curations?.map((curation) => (
-                <div key={curation.id} className="text-black">
-                  {curation.content}
+                <div
+                  key={curation.id}
+                  className="text-black cursor-pointer dark:text-white"
+                >
+                  <Link
+                    search={{
+                      id: curation.id,
+                    }}
+                    preload="intent"
+                    to="/curation-detail"
+                  >
+                    {curation.content}
+                  </Link>
                 </div>
               ))}
             </Card>

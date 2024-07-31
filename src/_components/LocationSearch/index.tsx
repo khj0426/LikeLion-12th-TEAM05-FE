@@ -13,7 +13,7 @@ interface Location {
   name: string
   address: string
   description: string
-  locationImage?: string
+  locationImage?: string | Uint8Array | File
 }
 
 declare global {
@@ -71,6 +71,7 @@ export const LocationSearch = ({
   const locationMapRef = useRef<HTMLDivElement | null>(null)
   const [pagination, setPagination] = useState<Pagination | null>(null)
 
+  console.log(selectedLocations)
   useEffect(() => {
     if (locationMapRef.current) {
       const newKakaoMap = createMap({
@@ -242,16 +243,17 @@ export const LocationSearch = ({
                           '',
                           '장소에 대해 설명을 적어주세요',
                         ).then((val) => {
-                          if (typeof val === 'object' && val !== null)
-                            setSelectedLocations([
-                              ...selectedLocations,
-                              {
-                                name: eachPlace.place_name,
-                                description: val?.value,
-                                address: eachPlace.road_address_name,
-                                locationImage: val?.image,
-                              },
-                            ])
+                          const image = new Blob()
+                          console.log(val)
+                          setSelectedLocations([
+                            ...selectedLocations,
+                            {
+                              name: eachPlace.place_name,
+                              description: val?.value ?? '',
+                              address: eachPlace.road_address_name,
+                              locationImage: val?.image,
+                            },
+                          ])
                         })
                       }}
                     >
@@ -351,7 +353,7 @@ export const LocationSearch = ({
                       name,
                       description,
                       address,
-                      locationImage,
+                      locationImage: locationImage as string,
                       curationId,
                     },
                     {
