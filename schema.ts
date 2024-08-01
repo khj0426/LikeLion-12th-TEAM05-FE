@@ -433,6 +433,10 @@ export interface components {
             name?: string;
             description?: string;
             address?: string;
+            /** Format: double */
+            longitude?: number;
+            /** Format: double */
+            latitude?: number;
         };
         ApiResponseTemplateLocationInfoResDto: {
             status?: string;
@@ -454,8 +458,8 @@ export interface components {
             latitude?: number;
         };
         CurationSaveReqDto: {
-            name?: string;
-            content?: string;
+            name: string;
+            content: string;
         };
         ApiResponseTemplateCurationInfoResDto: {
             status?: string;
