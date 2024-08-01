@@ -2,7 +2,6 @@ import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { Card } from 'flowbite-react'
 import { Input, Button } from '@/_components'
 import { UserContext } from '@/_context/userInfoContext'
-import { useDeleteCuration } from '@/_hooks/mutation'
 import { useContext, useState } from 'react'
 import Swal from 'sweetalert2'
 import { useGetLikedCuration } from '@/_hooks/query'
@@ -25,7 +24,6 @@ export const Route = createFileRoute('/mypage')({
   component: () => {
     const { email, name, setUserInfo } = useContext(UserContext)
     const { mutate } = useChangeUserInfo()
-    const { mutate: deleteCuration } = useDeleteCuration()
 
     const [error, setError] = useState<ZodError | null>(null)
     const [formData, setFormData] = useState<z.infer<typeof loginSchema>>({
