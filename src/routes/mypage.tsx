@@ -65,14 +65,6 @@ export const Route = createFileRoute('/mypage')({
                     to="/curation-detail"
                   >
                     {curation.content}
-                    <Button
-                      size="xs"
-                      onClick={() =>
-                        handleDeleteCuration({ curationId: curation.id + '' })
-                      }
-                    >
-                      ✖
-                    </Button>
                   </Link>
                 </div>
               ))}

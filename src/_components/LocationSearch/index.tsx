@@ -348,7 +348,14 @@ export const LocationSearch = ({
           }).then((res) => {
             if (res.isConfirmed) {
               selectedLocations.forEach(
-                ({ name, description, locationImage, address }) => {
+                ({
+                  name,
+                  description,
+                  locationImage,
+                  address,
+                  latitude,
+                  longitude,
+                }) => {
                   mutate(
                     {
                       name,
@@ -356,6 +363,8 @@ export const LocationSearch = ({
                       address,
                       locationImage: locationImage as string,
                       curationId,
+                      latitude,
+                      longitude,
                     },
                     {
                       onSuccess: () => {
