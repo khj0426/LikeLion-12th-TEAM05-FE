@@ -72,7 +72,6 @@ export const LocationSearch = ({
   const locationMapRef = useRef<HTMLDivElement | null>(null)
   const [pagination, setPagination] = useState<Pagination | null>(null)
 
-  console.log(selectedLocations)
   useEffect(() => {
     if (locationMapRef.current) {
       const newKakaoMap = createMap({
@@ -232,6 +231,7 @@ export const LocationSearch = ({
                         eachPlace.place_name
                       }`}</strong>
                       <p>{eachPlace.address_name}</p>
+                      <p>{eachPlace.x}</p>
                     </div>
 
                     <Button
