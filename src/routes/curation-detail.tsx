@@ -42,6 +42,18 @@ export const Route = createFileRoute('/curation-detail')({
       if (locationMapRef.current) {
         setMap(newKakaoMap)
       }
+
+      const bounds = new window.kakao.maps.LatLngBounds()
+      data.initalData?.locations?.forEach((location) => {
+        const marker = new window.kakao.maps.LatLng(
+          location.latitude,
+          location.longitude,
+        )
+        marker.setMap(newKakaoMap)
+        bounds.extend(
+          new window.kakao.maps.LatLng(location.latitude, location.longitude),
+        )
+      })
     }, [])
 
     return (
