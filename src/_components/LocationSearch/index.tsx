@@ -14,6 +14,8 @@ interface Location {
   address: string
   description: string
   locationImage?: string | Uint8Array | File
+  longitude: number
+  latitude: number
 }
 
 declare global {
@@ -242,7 +244,6 @@ export const LocationSearch = ({
                           '',
                           '장소에 대해 설명을 적어주세요',
                         ).then((val) => {
-                          console.log(val)
                           setSelectedLocations([
                             ...selectedLocations,
                             {
@@ -250,6 +251,8 @@ export const LocationSearch = ({
                               description: val?.value ?? '',
                               address: eachPlace.road_address_name,
                               locationImage: val?.image,
+                              latitude: eachPlace.x,
+                              longitude: eachPlace.y,
                             },
                           ])
                         })

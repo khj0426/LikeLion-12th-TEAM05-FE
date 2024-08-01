@@ -108,6 +108,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/comment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["commentSave"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/user/info": {
         parameters: {
             query?: never;
@@ -180,6 +196,22 @@ export interface paths {
         patch: operations["curationUpdate"];
         trace?: never;
     };
+    "/comment/{commentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["commentDelete"];
+        options?: never;
+        head?: never;
+        patch: operations["commentUpdate"];
+        trace?: never;
+    };
     "/user/popular": {
         parameters: {
             query?: never;
@@ -192,22 +224,6 @@ export interface paths {
          * @description 모든 사용자는 랜딩 페이지에서 큐레이션을 가장 많이 작성한 6명의 큐레이터를 볼 수 있습니다.
          */
         get: operations["findByOrderByCurationsCurationCountDesc"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/test": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["Test"];
         put?: never;
         post?: never;
         delete?: never;
@@ -264,6 +280,26 @@ export interface paths {
          * @description 인증된 사용자가 고른 위치를 조회합니다.
          */
         get: operations["locationFindAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/curation/user/like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 인증된 사용자가 자신이 좋아요 누른 큐레이션 조회
+         * @description 인증된 사용자가 마이페이지에서 자신이 좋아요 누른 큐레이션 목록을 6개씩 조회합니다.
+         */
+        get: operations["findCurationUserLikes"];
         put?: never;
         post?: never;
         delete?: never;
@@ -365,7 +401,7 @@ export interface components {
             status?: string;
             message?: string;
             /** @enum {string} */
-            data?: "GET_SUCCESS" | "LOCATION_UPDATE_SUCCESS" | "CURATION_UPDATE_SUCCESS" | "LOCATION_DELETE_SUCCESS" | "CURATION_DELETE_SUCCESS" | "LIKE_DELETE_SUCCESS" | "USER_SIGNUP_SUCCESS" | "USER_LOGIN_SUCCESS" | "USER_INFO_UPDATE_SUCCESS" | "LOCATION_SAVE_SUCCESS" | "CURATION_SAVE_SUCCESS" | "LIKE_SAVE_SUCCESS";
+            data?: "GET_SUCCESS" | "LOCATION_UPDATE_SUCCESS" | "CURATION_UPDATE_SUCCESS" | "COMMENT_UPDATE_SUCCESS" | "LOCATION_DELETE_SUCCESS" | "CURATION_DELETE_SUCCESS" | "COMMENT_DELETE_SUCCESS" | "LIKE_DELETE_SUCCESS" | "USER_SIGNUP_SUCCESS" | "USER_LOGIN_SUCCESS" | "USER_INFO_UPDATE_SUCCESS" | "LOCATION_SAVE_SUCCESS" | "CURATION_SAVE_SUCCESS" | "COMMENT_SAVE_SUCCESS" | "LIKE_SAVE_SUCCESS";
         };
         UserSignUpReqDto: {
             name: string;
@@ -412,6 +448,10 @@ export interface components {
             description?: string;
             address?: string;
             locationImage?: string;
+            /** Format: double */
+            longitude?: number;
+            /** Format: double */
+            latitude?: number;
         };
         CurationSaveReqDto: {
             name?: string;
@@ -432,6 +472,66 @@ export interface components {
             /** Format: int32 */
             likeCount?: number;
             locations?: components["schemas"]["LocationInfoResDto"][];
+        };
+        CommentSaveReqDto: {
+            /** Format: int64 */
+            id?: number;
+            name: string;
+            comment: string;
+            curation?: components["schemas"]["Curation"];
+        };
+        Curation: {
+            /** Format: date-time */
+            createDate?: string;
+            /** Format: date-time */
+            modifiedDate?: string;
+            /** Format: int64 */
+            id?: number;
+            name?: string;
+            content?: string;
+            /** Format: int32 */
+            likeCount?: number;
+            locations?: components["schemas"]["Location"][];
+            user?: components["schemas"]["User"];
+            likes?: components["schemas"]["Like"][];
+        };
+        Like: {
+            /** Format: int64 */
+            id?: number;
+            user?: components["schemas"]["User"];
+        };
+        Location: {
+            /** Format: int64 */
+            id?: number;
+            name?: string;
+            description?: string;
+            /** Format: double */
+            longitude?: number;
+            /** Format: double */
+            latitude?: number;
+            curation?: components["schemas"]["Curation"];
+            user?: components["schemas"]["User"];
+        };
+        User: {
+            /** Format: int64 */
+            id?: number;
+            name?: string;
+            email?: string;
+            password?: string;
+            accessToken?: string;
+            refreshToken?: string;
+            /** @enum {string} */
+            role?: "ROLE_USER";
+            curations?: components["schemas"]["Curation"][];
+            locations?: components["schemas"]["Location"][];
+            likes?: components["schemas"]["Like"][];
+            /** Format: int32 */
+            curationCount?: number;
+        };
+        ApiResponseTemplate: {
+            status?: string;
+            message?: string;
+            data?: Record<string, never>;
         };
         UserInfoUpdateReqDto: {
             name: string;
@@ -457,6 +557,9 @@ export interface components {
         CurationUpdateReqDto: {
             name?: string;
             content?: string;
+        };
+        CommentUpdateReqDto: {
+            comment: string;
         };
         ApiResponseTemplateUserPopularListResDto: {
             status?: string;
@@ -766,6 +869,39 @@ export interface operations {
             };
         };
     };
+    commentSave: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommentSaveReqDto"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+        };
+    };
     userInfoUpdate: {
         parameters: {
             query?: never;
@@ -1020,6 +1156,72 @@ export interface operations {
             };
         };
     };
+    commentDelete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+        };
+    };
+    commentUpdate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommentUpdateReqDto"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+        };
+    };
     findByOrderByCurationsCurationCountDesc: {
         parameters: {
             query?: never;
@@ -1054,35 +1256,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateUserPopularListResDto"];
-                };
-            };
-        };
-    };
-    Test: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
-            /** @description Bad Request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ApiResponseTemplateString"];
                 };
             };
         };
@@ -1190,6 +1363,48 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateLocationListResDto"];
+                };
+            };
+        };
+    };
+    findCurationUserLikes: {
+        parameters: {
+            query?: {
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 서버 내부 오류입니다. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
                 };
             };
         };

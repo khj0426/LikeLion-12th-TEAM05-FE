@@ -15,6 +15,8 @@ const postCurationLocation = async (req: APIRequest) => {
       name: req.name,
       description: req.description,
       address: req.address,
+      longitude: req.longitude,
+      latitude: req.latitude,
     }
     formData.append('location', JSON.stringify(obj))
 
