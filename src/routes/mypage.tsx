@@ -33,11 +33,8 @@ export const Route = createFileRoute('/mypage')({
       email,
       password: '',
     })
-    const { data: likedCurations, refetch } = useGetLikedCuration()
-    const handleDeleteCuration = ({ curationId }: { curationId: string }) => {
-      deleteCuration({ curationId })
-      refetch()
-    }
+    const { data: likedCurations } = useGetLikedCuration()
+
     return (
       <main className="w-[80%] mx-auto my-4">
         <header className="flex justify-center mb-4">
