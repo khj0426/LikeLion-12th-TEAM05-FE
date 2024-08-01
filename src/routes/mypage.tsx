@@ -2,6 +2,7 @@ import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { Card } from 'flowbite-react'
 import { Input, Button } from '@/_components'
 import { UserContext } from '@/_context/userInfoContext'
+import { useDeleteCuration } from '@/_hooks/mutation'
 import { useContext, useState } from 'react'
 import Swal from 'sweetalert2'
 import { useGetLikedCuration } from '@/_hooks/query'
@@ -24,6 +25,7 @@ export const Route = createFileRoute('/mypage')({
   component: () => {
     const { email, name, setUserInfo } = useContext(UserContext)
     const { mutate } = useChangeUserInfo()
+    const { mutate: deleteCuration } = useDeleteCuration()
 
     const [error, setError] = useState<ZodError | null>(null)
     const [formData, setFormData] = useState<z.infer<typeof loginSchema>>({
@@ -31,7 +33,11 @@ export const Route = createFileRoute('/mypage')({
       email,
       password: '',
     })
-    const { data: likedCurations } = useGetLikedCuration()
+    const { data: likedCurations, refetch } = useGetLikedCuration()
+    const handleDeleteCuration = ({ curationId }: { curationId: string }) => {
+      deleteCuration({ curationId })
+      refetch()
+    }
     return (
       <main className="w-[80%] mx-auto my-4">
         <header className="flex justify-center mb-4">
@@ -43,7 +49,7 @@ export const Route = createFileRoute('/mypage')({
             <Card className="bg-white w-[250px] h-[300px] flex justify-center items-center"></Card>
           </article>
 
-          <article className="flex flex-col text-center justify-center mx-auto">
+          <article className="flex flex-col text-center justify-center mx-auto max-h-[700px]">
             <h3 className="font-bold text-xl">🦎 내가 좋아하는 산책로</h3>
             <Card className="bg-white w-[250px] h-[300px] flex justify-center items-center overflow-scroll">
               {likedCurations?.curations?.map((curation) => (
@@ -59,6 +65,14 @@ export const Route = createFileRoute('/mypage')({
                     to="/curation-detail"
                   >
                     {curation.content}
+                    <Button
+                      size="xs"
+                      onClick={() =>
+                        handleDeleteCuration({ curationId: curation.id + '' })
+                      }
+                    >
+                      ✖
+                    </Button>
                   </Link>
                 </div>
               ))}
