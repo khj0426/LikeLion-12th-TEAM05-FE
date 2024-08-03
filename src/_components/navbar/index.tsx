@@ -1,14 +1,55 @@
 import Walk from '../../../public/walk.svg?react'
-import { Navbar } from 'flowbite-react'
+import { Navbar, Popover } from 'flowbite-react'
 import { Link } from '@tanstack/react-router'
 import { useThemeMode } from 'flowbite-react'
 import { UserContext } from '@/_context/userInfoContext'
 import { useContext } from 'react'
 import { DarkThemeToggle } from 'flowbite-react'
+import { useLogout } from '@/_hooks/mutation'
 
 export const NavBar = () => {
+  const { mutate: logout } = useLogout()
   const { name } = useContext(UserContext)
   const { toggleMode } = useThemeMode()
+
+  const handleLogout = () => {
+    logout()
+    sessionStorage.removeItem('accessToken')
+    sessionStorage.removeItem('refreshToken')
+    sessionStorage.removeItem('walkmate-name')
+    window.location.reload()
+  }
+
+  const renderUserPopover = () => (
+    <Popover
+      aria-labelledby="default-popover"
+      content={
+        <div
+          role="button"
+          aria-label="logout_button"
+          tabIndex={0}
+          className="w-64 text-sm text-gray-500 dark:text-gray-400"
+          onClick={handleLogout}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleLogout()
+            }
+          }}
+        >
+          <div className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700">
+            <h3
+              id="default-popover"
+              className="font-semibold text-gray-900 dark:text-white"
+            >
+              로그아웃
+            </h3>
+          </div>
+        </div>
+      }
+    >
+      <span className="text-white-200 flex items-center font-bold">{name}</span>
+    </Popover>
+  )
 
   return (
     <Navbar fluid rounded className="bg-primary dark:bg-ONYX">
@@ -26,22 +67,17 @@ export const NavBar = () => {
           Home
         </Link>
         {name && (
-          <Link
-            to="/curation-select"
-            className="text-white-200 flex items-center font-bold"
-          >
-            큐레이션 생성
-          </Link>
+          <>
+            <Link
+              to="/curation-select"
+              className="text-white-200 flex items-center font-bold"
+            >
+              큐레이션 생성
+            </Link>
+            {renderUserPopover()}
+          </>
         )}
 
-        {name && (
-          <Link
-            className="text-white-200 flex items-center font-bold"
-            to="/mypage"
-          >
-            {name}
-          </Link>
-        )}
         {!name && (
           <Link
             to="/login"
@@ -50,12 +86,8 @@ export const NavBar = () => {
             로그인
           </Link>
         )}
-        <DarkThemeToggle
-          onClick={toggleMode}
-          style={{
-            color: '#FFD233',
-          }}
-        />
+
+        <DarkThemeToggle onClick={toggleMode} style={{ color: '#FFD233' }} />
       </div>
     </Navbar>
   )
