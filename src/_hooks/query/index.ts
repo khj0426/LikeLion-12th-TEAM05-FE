@@ -12,3 +12,4 @@ export {
   getCurationDetail,
 } from './useGetCurationDetails'
 export { useGetLikedCuration } from './useGetLikedCuration'
+export { useGetComments } from './useGetComments'
