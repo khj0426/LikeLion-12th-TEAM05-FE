@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   useCurationDetailInfo,
@@ -6,6 +6,7 @@ import {
   useGetComments,
 } from '@/_hooks/query'
 import { createMap } from '@/_utils'
+import { UserContext } from '@/_context/userInfoContext'
 import { useCreateComment } from '@/_hooks/mutation'
 import { Button, Input } from '@/_components'
 import Swal from 'sweetalert2'
@@ -28,6 +29,7 @@ export const Route = createFileRoute('/curation-detail')({
       curationId: data.cutaionId + '',
       initCurationInfo: data.initalData,
     })
+    const { name } = useContext(UserContext)
     const [_map, setMap] = useState<any>()
     const [comment, setComment] = useState('')
     const { mutate: createComment } = useCreateComment()
@@ -102,37 +104,41 @@ export const Route = createFileRoute('/curation-detail')({
           </div>
 
           <div className="flex flex-col gap-4 max-h-[600px] overflow-y-scroll">
-            <Input
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="댓글을 입력해주세요"
-            />
-            <Button
-              size="xs"
-              variant={'primary'}
-              onClick={() => {
-                createComment(
-                  {
-                    comment: comment,
-                    curationId: curationInfo?.id + '',
-                  },
-                  {
-                    onSuccess: () => {
-                      Swal.fire('댓글을 작성했어요!')
-                      refetchComments()
-                    },
-                  },
-                )
-              }}
-            >
-              저장
-            </Button>
-
+            {name && (
+              <div className="sticky top-0 z-10 bg-white rounded-lg p-4 mb-2 shadow">
+                <Input
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="댓글을 입력해주세요"
+                />
+                <Button
+                  size="xs"
+                  variant={'primary'}
+                  onClick={() => {
+                    createComment(
+                      {
+                        comment: comment,
+                        curationId: curationInfo?.id + '',
+                      },
+                      {
+                        onSuccess: () => {
+                          Swal.fire('댓글을 작성했어요!')
+                          refetchComments()
+                        },
+                      },
+                    )
+                  }}
+                >
+                  저장
+                </Button>
+              </div>
+            )}
+            <div className="flex-grow" />
             {comments?.map(({ comment }, index) => (
               <div
                 key={index}
-                className="p-8 bg-white border border-gray-300 rounded-lg shadow-sm"
+                className="p-4 bg-white border border-gray-300 rounded-lg shadow-sm"
               >
-                <div className="flex justify-between mb-2 line-clamp-2 w-[350px]">
+                <div className="flex justify-between mb-2 line-clamp-2 w-[320px]">
                   <span className="text-gray-500 text-sm">{comment}</span>
                 </div>
               </div>
