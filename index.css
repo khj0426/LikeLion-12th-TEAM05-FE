@@ -56,6 +56,21 @@ font-face {
     body {
       @apply font-Pretendard bg-[#0E0E2C] text-[#FAFCFE] min-h-[100vh] h-auto;
     }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #2c2c2c;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4a4a4a;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6a6a6a;
+    }
   }
 
   @media ((prefers-color-scheme: light)) {
