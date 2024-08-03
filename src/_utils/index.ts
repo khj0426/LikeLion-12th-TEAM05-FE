@@ -10,9 +10,10 @@ export const cn = (...inputs: ClassValue[]) => {
 type CreateMapProps = {
   pos: Pick<GeolocationPosition, 'coords'>
   container: HTMLElement
+  level?: number
 }
 
-export function createMap({ pos, container }: CreateMapProps) {
+export function createMap({ pos, container, level }: CreateMapProps) {
   const $latitude = pos?.coords?.latitude
   const $longitude = pos?.coords?.longitude
 
@@ -21,6 +22,7 @@ export function createMap({ pos, container }: CreateMapProps) {
     draggable: true,
     scrollwheel: true,
     keyboardShortcuts: true,
+    level,
   }
 
   return new window.kakao.maps.Map(container, $mapOptions)

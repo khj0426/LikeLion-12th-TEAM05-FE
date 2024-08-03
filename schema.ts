@@ -108,15 +108,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/comment": {
+    "/comment/{curationId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * 모든 사용자가  큐레이션에 달린 댓글 전체 조회
+         * @description 모든 사용자가 산책로 지도 페이지에서 큐레이션에 단 댓글을 모두 조회합니다.
+         */
+        get: operations["commentFindAll"];
         put?: never;
+        /**
+         * 인증된 사용자가 큐레이션에 댓글 달기
+         * @description 인증된 사용자가 산책로 지도 페이지에서 큐레이션에 댓글을 추가합니다.
+         */
         post: operations["commentSave"];
         delete?: never;
         options?: never;
@@ -206,9 +214,17 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /**
+         * 인증된 사용자가 큐레이션에 단 댓글 삭제
+         * @description 인증된 사용자가 산책로 지도 페이지에서 큐레이션에 단 댓글을 삭제합니다.
+         */
         delete: operations["commentDelete"];
         options?: never;
         head?: never;
+        /**
+         * 인증된 사용자가 큐레이션에 단 댓글 수정
+         * @description 인증된 사용자가 산책로 지도 페이지에서 큐레이션에 단 댓글을 수정합니다.
+         */
         patch: operations["commentUpdate"];
         trace?: never;
     };
@@ -240,6 +256,26 @@ export interface paths {
             cookie?: never;
         };
         get: operations["profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/login/oauth2/code/kakao": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 카카오 인가 코드 발급 후 액세스 토큰 리다이렉트
+         * @description 카카오 인가 코드 발급 후 액세스 토큰을 리다이렉트 합니다.
+         */
+        get: operations["kakaoCallback"];
         put?: never;
         post?: never;
         delete?: never;
@@ -410,7 +446,7 @@ export interface components {
             accessToken?: string;
             refreshToken?: string;
             /** @enum {string} */
-            role?: "ROLE_USER";
+            role?: "ROLE_USER" | "ROLE_KAKAO" | "ROLE_GOOGLE";
         };
         UserSignInReqDto: {
             email: string;
@@ -466,6 +502,9 @@ export interface components {
             message?: string;
             data?: components["schemas"]["CurationInfoResDto"];
         };
+        CommentInfoResDto: {
+            comment?: string;
+        };
         CurationInfoResDto: {
             /** Format: int64 */
             id?: number;
@@ -475,67 +514,18 @@ export interface components {
             createDate?: string;
             /** Format: int32 */
             likeCount?: number;
+            /** Format: int32 */
+            commentCount?: number;
             locations?: components["schemas"]["LocationInfoResDto"][];
+            comments?: components["schemas"]["CommentInfoResDto"][];
         };
         CommentSaveReqDto: {
-            /** Format: int64 */
-            id?: number;
-            name: string;
             comment: string;
-            curation?: components["schemas"]["Curation"];
         };
-        Curation: {
-            /** Format: date-time */
-            createDate?: string;
-            /** Format: date-time */
-            modifiedDate?: string;
-            /** Format: int64 */
-            id?: number;
-            name?: string;
-            content?: string;
-            /** Format: int32 */
-            likeCount?: number;
-            locations?: components["schemas"]["Location"][];
-            user?: components["schemas"]["User"];
-            likes?: components["schemas"]["Like"][];
-        };
-        Like: {
-            /** Format: int64 */
-            id?: number;
-            user?: components["schemas"]["User"];
-        };
-        Location: {
-            /** Format: int64 */
-            id?: number;
-            name?: string;
-            description?: string;
-            /** Format: double */
-            longitude?: number;
-            /** Format: double */
-            latitude?: number;
-            curation?: components["schemas"]["Curation"];
-            user?: components["schemas"]["User"];
-        };
-        User: {
-            /** Format: int64 */
-            id?: number;
-            name?: string;
-            email?: string;
-            password?: string;
-            accessToken?: string;
-            refreshToken?: string;
-            /** @enum {string} */
-            role?: "ROLE_USER";
-            curations?: components["schemas"]["Curation"][];
-            locations?: components["schemas"]["Location"][];
-            likes?: components["schemas"]["Like"][];
-            /** Format: int32 */
-            curationCount?: number;
-        };
-        ApiResponseTemplate: {
+        ApiResponseTemplateCommentInfoResDto: {
             status?: string;
             message?: string;
-            data?: Record<string, never>;
+            data?: components["schemas"]["CommentInfoResDto"];
         };
         UserInfoUpdateReqDto: {
             name: string;
@@ -565,6 +555,11 @@ export interface components {
         CommentUpdateReqDto: {
             comment: string;
         };
+        ApiResponseTemplate: {
+            status?: string;
+            message?: string;
+            data?: Record<string, never>;
+        };
         ApiResponseTemplateUserPopularListResDto: {
             status?: string;
             message?: string;
@@ -577,6 +572,9 @@ export interface components {
         };
         UserPopularListResDto: {
             userPopular?: components["schemas"]["UserPopularInfoResDto"][];
+        };
+        KakaoToken: {
+            accessToken?: string;
         };
         GoogleToken: {
             accessToken?: string;
@@ -596,6 +594,14 @@ export interface components {
         };
         CurationListResDto: {
             curations?: components["schemas"]["CurationInfoResDto"][];
+        };
+        ApiResponseTemplateCommentListResDto: {
+            status?: string;
+            message?: string;
+            data?: components["schemas"]["CommentListResDto"];
+        };
+        CommentListResDto: {
+            comments?: components["schemas"]["CommentInfoResDto"][];
         };
     };
     responses: never;
@@ -873,11 +879,44 @@ export interface operations {
             };
         };
     };
+    commentFindAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                curationId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCommentListResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+        };
+    };
     commentSave: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                curationId: number;
+            };
             cookie?: never;
         };
         requestBody: {
@@ -886,22 +925,40 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseTemplate"];
+                    "*/*": components["schemas"]["ApiResponseTemplateCommentInfoResDto"];
                 };
             };
-            /** @description Bad Request */
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCommentInfoResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCommentInfoResDto"];
                 };
             };
         };
@@ -1171,7 +1228,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1180,13 +1237,22 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
-            /** @description Bad Request */
+            /** @description 잘못된 요청입니다. */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -1206,7 +1272,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
+            /** @description 응답 생성에 성공하였습니다. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1215,13 +1281,22 @@ export interface operations {
                     "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
-            /** @description Bad Request */
+            /** @description 잘못된 요청입니다. */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplate"];
                 };
             };
         };
@@ -1289,6 +1364,46 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+        };
+    };
+    kakaoCallback: {
+        parameters: {
+            query: {
+                code: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["KakaoToken"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 인증이 필요합니다. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["KakaoToken"];
                 };
             };
         };
