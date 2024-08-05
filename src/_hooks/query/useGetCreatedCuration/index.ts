@@ -5,7 +5,7 @@ import { axiosClient } from '@/services'
 type APIResponse =
   components['schemas']['ApiResponseTemplateCurationListResDto']
 
-const getLikedCuration = async ({
+const getCreatedCuration = async ({
   size = 10,
   pageParam = 0,
 }: {
@@ -14,7 +14,7 @@ const getLikedCuration = async ({
 }) => {
   try {
     const response = await axiosClient.get<APIResponse['data']>(
-      `/curation/user/like?page=${pageParam}&size=${size}`,
+      `/curation/user?page=${pageParam}&size=${size}`,
     )
 
     return {
@@ -27,13 +27,20 @@ const getLikedCuration = async ({
   }
 }
 
-export const useGetLikedCuration = () => {
+export const useGetCreatedCuration = () => {
   return useInfiniteQuery({
-    queryKey: ['getInfinityLikedCurations'],
+    queryKey: ['getInfinityCreatedCurations'],
     suspense: true,
     useErrorBoundary: true,
-    queryFn: ({ pageParam }) => getLikedCuration({ pageParam, size: 12 }),
+    queryFn: ({ pageParam }) => getCreatedCuration({ pageParam, size: 12 }),
     getNextPageParam: (lastPage) => {
+      if (
+        lastPage.response &&
+        lastPage.response.curations &&
+        lastPage.response.curations?.length < 12
+      ) {
+        return undefined
+      }
       return lastPage.current_page + 1
     },
   })
