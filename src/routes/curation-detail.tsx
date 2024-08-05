@@ -9,6 +9,7 @@ import { createMap } from '@/_utils'
 import { UserContext } from '@/_context/userInfoContext'
 import { useCreateComment } from '@/_hooks/mutation'
 import { Button, Input } from '@/_components'
+import { Modal } from 'flowbite-react'
 import Swal from 'sweetalert2'
 
 //TODO - 장소 LatLng넘길수 있게 수정
@@ -37,6 +38,7 @@ export const Route = createFileRoute('/curation-detail')({
       curationId: curationInfo?.id + '',
     })
 
+    const [openModal, setOpenModal] = useState(false)
     useEffect(() => {
       const newKakaoMap = createMap({
         pos: {
@@ -88,17 +90,28 @@ export const Route = createFileRoute('/curation-detail')({
           />
           <div className="flex flex-col gap-4 max-h-[600px]">
             {curationInfo?.locations?.map((location, index) => (
-              <div key={index} className="p-3">
+              <div
+                key={index}
+                className="p-3 cursor-pointer"
+                onClick={() => {
+                  setOpenModal(!openModal)
+                }}
+              >
                 {location.locationImage && (
-                  <img
-                    src={location.locationImage}
-                    alt={location.name}
-                    className="w-full h-auto rounded-lg mb-2"
-                  />
+                  <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                    <Modal.Body>
+                      <img
+                        onClick={() => setOpenModal(false)}
+                        src={location.locationImage}
+                        alt="선택한 장소"
+                        className="w-full h-auto rounded-lg mb-2"
+                      />
+                    </Modal.Body>
+                  </Modal>
                 )}
                 <strong>{`[${index + 1}] ${location.name}`}</strong>
-                {location.address} && <p>위치🍏: {location.address}</p>
-                {location.description} && <p>설명 🍏: {location.description}</p>
+                {location.address && <p>위치🍏: {location.address}</p>}
+                {location.description && <p>설명 🍏: {location.description}</p>}
               </div>
             ))}
           </div>

@@ -239,7 +239,7 @@ export interface paths {
          * 모든 사용자가 큐레이션을 가장 많이 작성한 6명의 큐레이터 조회
          * @description 모든 사용자는 랜딩 페이지에서 큐레이션을 가장 많이 작성한 6명의 큐레이터를 볼 수 있습니다.
          */
-        get: operations["findByOrderByCurationsCurationCountDesc"];
+        get: operations["findAllByOrderByCurationCountDesc"];
         put?: never;
         post?: never;
         delete?: never;
@@ -324,6 +324,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/curation/user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 인증된 사용자가 자신이 좋아요 누른 큐레이션 조회
+         * @description 인증된 사용자가 마이페이지에서 자신이 좋아요 누른 큐레이션 목록을 6개씩 조회합니다.
+         */
+        get: operations["findMyCuration"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/curation/user/like": {
         parameters: {
             query?: never;
@@ -353,7 +373,7 @@ export interface paths {
         };
         /**
          * 모든 사용자가 큐레이션 검색
-         * @description 모든 사용자가 산책로 지도 페이지에서 큐레이션을 검색합니다.
+         * @description 모든 사용자가 산책로 지도 페이지에서 큐레이션을 6개씩 검색합니다.
          */
         get: operations["searchCurations"];
         put?: never;
@@ -372,10 +392,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * 모든 사용자가 최신순으로 정렬된 큐레이션 6개 조회
-         * @description 모든 사용자가 랜딩페이지에서 최신순으로 정렬된 6개의 큐레이션을 조회합니다.
+         * 모든 사용자가 최신순으로 정렬된 큐레이션 6개씩 조회
+         * @description 모든 사용자가 랜딩페이지에서 최신순으로 정렬된 큐레이션을 6개씩 조회합니다.
          */
-        get: operations["findTop6ByOrderByCreateDateDesc"];
+        get: operations["findAllByOrderByCreateDateDesc"];
         put?: never;
         post?: never;
         delete?: never;
@@ -392,10 +412,30 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * 모든 사용자가 좋아요 순으로 정렬된 큐레이션 6개 조회
-         * @description 모든 사용자가 랜딩페이지에서 좋아요 순으로 정렬된 6개의 큐레이션을 조회합니다.
+         * 모든 사용자가 좋아요 순으로 정렬된 큐레이션 6개씩 조회
+         * @description 모든 사용자가 랜딩페이지에서 좋아요 순으로 정렬된 큐레이션을 6개씩 조회합니다.
          */
-        get: operations["findTop6ByOrderByLikeCountDesc"];
+        get: operations["findAllByOrderByLikeCountDesc"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/curation/comment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 인증된 사용자가 자신이 좋아요 누른 큐레이션 조회
+         * @description 인증된 사용자가 마이페이지에서 자신이 좋아요 누른 큐레이션 목록을 6개씩 조회합니다.
+         */
+        get: operations["findAllByOrderCommentCountDesc"];
         put?: never;
         post?: never;
         delete?: never;
@@ -451,8 +491,6 @@ export interface components {
         UserSignInReqDto: {
             email: string;
             password: string;
-            accessToken?: string;
-            refreshToken?: string;
         };
         ApiResponseTemplateUserSignInResDto: {
             status?: string;
@@ -549,8 +587,8 @@ export interface components {
             address?: string;
         };
         CurationUpdateReqDto: {
-            name?: string;
-            content?: string;
+            name: string;
+            content: string;
         };
         CommentUpdateReqDto: {
             comment: string;
@@ -1301,9 +1339,13 @@ export interface operations {
             };
         };
     };
-    findByOrderByCurationsCurationCountDesc: {
+    findAllByOrderByCurationCountDesc: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -1486,6 +1528,48 @@ export interface operations {
             };
         };
     };
+    findMyCuration: {
+        parameters: {
+            query?: {
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 서버 내부 오류입니다. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+        };
+    };
     findCurationUserLikes: {
         parameters: {
             query?: {
@@ -1532,6 +1616,9 @@ export interface operations {
         parameters: {
             query: {
                 query: string;
+                page?: number;
+                size?: number;
+                sort?: string;
             };
             header?: never;
             path?: never;
@@ -1568,9 +1655,13 @@ export interface operations {
             };
         };
     };
-    findTop6ByOrderByCreateDateDesc: {
+    findAllByOrderByCreateDateDesc: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -1606,9 +1697,55 @@ export interface operations {
             };
         };
     };
-    findTop6ByOrderByLikeCountDesc: {
+    findAllByOrderByLikeCountDesc: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 응답 생성에 성공하였습니다. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+            /** @description 잘못된 요청입니다. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateString"];
+                };
+            };
+            /** @description 서버 내부 오류입니다. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTemplateCurationListResDto"];
+                };
+            };
+        };
+    };
+    findAllByOrderCommentCountDesc: {
+        parameters: {
+            query?: {
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;

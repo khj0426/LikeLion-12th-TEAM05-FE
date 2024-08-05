@@ -13,3 +13,4 @@ export {
 } from './useGetCurationDetails'
 export { useGetLikedCuration } from './useGetLikedCuration'
 export { useGetComments } from './useGetComments'
+export { useGetCreatedCuration } from './useGetCreatedCuration'
