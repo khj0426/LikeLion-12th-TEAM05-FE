@@ -1,5 +1,6 @@
 {
   "files": [],
+  "exclude": ["/src/routes/login.tsx"],
   "references": [
     {
       "path": "./tsconfig.app.json"

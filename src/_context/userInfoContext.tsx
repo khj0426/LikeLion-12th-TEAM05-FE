@@ -32,6 +32,6 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
       setUserInfo,
     }
   }, [userInfo?.name])
-  console.log(value)
+
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
