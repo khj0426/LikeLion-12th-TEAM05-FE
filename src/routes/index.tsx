@@ -1,5 +1,6 @@
 import MainBannerSecond from '../../public/mainbanner_2.svg?react'
 import MainBanner from '../../public/mainbanner.svg?react'
+import SecondBanner from '../../public/second_banner.svg?react'
 
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Carousel } from 'flowbite-react'
@@ -19,22 +20,7 @@ export const Route = createFileRoute('/')({
       <div className="text-WHITE h-56 sm:h-64 xl:h-80 2xl:h-96 bg-PRIMARY dark:bg-[#0E0E2C]">
         <Carousel className="my-[50px] text-WHITE bg-PRIMARY w-[80%] mx-auto">
           <MainBanner />
-          <img
-            src="https://flowbite.com/docs/images/carousel/carousel-2.svg"
-            alt="..."
-          />
-          <img
-            src="https://flowbite.com/docs/images/carousel/carousel-3.svg"
-            alt="..."
-          />
-          <img
-            src="https://flowbite.com/docs/images/carousel/carousel-4.svg"
-            alt="..."
-          />
-          <img
-            src="https://flowbite.com/docs/images/carousel/carousel-5.svg"
-            alt="..."
-          />
+          <SecondBanner />
         </Carousel>
 
         <section className="flex flex-col gap-[25px] w-[80%] m-auto">
@@ -84,12 +70,12 @@ export const Route = createFileRoute('/')({
 
         <section className="flex flex-col items-center justify-center w-[80%] mx-auto my-20">
           <MainBannerSecond />
-          <div className="mt-4 flex gap-[25px]">
+          <div className="mt-4 flex gap-[25px] mb-4">
             <Button variant={'primary'} shape="rounded" size="xl">
               <Link to="/curation-maps">큐레이션 지도 보러 가기</Link>
             </Button>
             <Button variant={'secondary'} shape="rounded" size="xl">
-              내 주변 지도 보러 가기
+              <Link to="/signin"> 회원가입하기</Link>
             </Button>
           </div>
         </section>

@@ -30,8 +30,20 @@ export const Route = createFileRoute('/curation-detail')({
       curationId: data.cutaionId + '',
       initCurationInfo: data.initalData,
     })
+    const [selectedLocation, setSelectedLocation] = useState<{
+      locationName: string
+      locationAddress: string
+      latitude: number
+      longitude: number
+    }>({
+      locationName: '',
+      locationAddress: '',
+      latitude: 0,
+      longitude: 0,
+    })
     const { name } = useContext(UserContext)
     const [_map, setMap] = useState<any>()
+    const [detailMap, setDetailMap] = useState<any>()
     const [comment, setComment] = useState('')
     const { mutate: createComment } = useCreateComment()
     const { data: comments, refetch: refetchComments } = useGetComments({
@@ -39,6 +51,35 @@ export const Route = createFileRoute('/curation-detail')({
     })
 
     const [openModal, setOpenModal] = useState(false)
+
+    useEffect(() => {
+      if (!_map || !selectedLocation.latitude || !selectedLocation.longitude)
+        return
+
+      const markerPosition = new window.kakao.maps.LatLng(
+        selectedLocation.longitude,
+        selectedLocation.latitude,
+      )
+
+      const marker = new window.kakao.maps.Marker({
+        position: markerPosition,
+        image: new window.kakao.maps.MarkerImage(
+          'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
+          new window.kakao.maps.Size(36, 36),
+          {
+            spriteSize: new window.kakao.maps.Size(36, 691),
+            offset: new window.kakao.maps.Point(13, 37),
+          },
+        ),
+      })
+      marker.setMap(_map)
+      _map.panTo(markerPosition)
+      _map.setLevel(3)
+      return () => {
+        marker.setMap(null) // 마커를 지우는 것이 좋습니다.
+      }
+    }, [selectedLocation, _map, locationMapRef.current]) // 의존성 변경
+
     useEffect(() => {
       const newKakaoMap = createMap({
         pos: {
@@ -95,17 +136,25 @@ export const Route = createFileRoute('/curation-detail')({
                 className="p-3 cursor-pointer"
                 onClick={() => {
                   setOpenModal(!openModal)
+                  setSelectedLocation({
+                    locationAddress: location.address ?? '',
+                    locationName: location.name ?? '',
+                    latitude: location.latitude ?? 0,
+                    longitude: location.longitude ?? 0,
+                  })
                 }}
               >
                 {location.locationImage && (
                   <Modal show={openModal} onClose={() => setOpenModal(false)}>
-                    <Modal.Body>
-                      <img
-                        onClick={() => setOpenModal(false)}
-                        src={location.locationImage}
-                        alt="선택한 장소"
-                        className="w-full h-auto rounded-lg mb-2"
-                      />
+                    <Modal.Body className="bg-white w-auto h-auto">
+                      <div>
+                        <img
+                          onClick={() => setOpenModal(false)}
+                          src={location.locationImage}
+                          alt="선택한 장소"
+                          className="w-full h-auto rounded-lg mb-2"
+                        />
+                      </div>
                     </Modal.Body>
                   </Modal>
                 )}
