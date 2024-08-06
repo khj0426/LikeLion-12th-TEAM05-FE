@@ -1,8 +1,8 @@
-import People from '../../../../public/people.svg?react';
+import People from '../../../../public/people.svg?react'
 
-import { Banner } from 'flowbite-react';
-import { Button } from '@/_components';
-import { Link } from '@tanstack/react-router';
+import { Banner } from 'flowbite-react'
+import { Button } from '@/_components'
+import { Link } from '@tanstack/react-router'
 export const LoginBanner = () => {
   return (
     <Banner>
@@ -19,8 +19,17 @@ export const LoginBanner = () => {
           <Button>
             <Link to="/signin">회원가입</Link>
           </Button>
+          <Button
+            size="xs"
+            onClick={() => {
+              window.location.href =
+                'https://accounts.google.com/o/oauth2/v2/auth?client_id=279343714696-d5f6vfgjl73t3rj8oinvnghkub63h4v1.apps.googleusercontent.com&redirect_uri=http://localhost:8080/login/oauth2/code/google&response_type=code&scope=email%20profile'
+            }}
+          >
+            구글로 로그인
+          </Button>
         </div>
       </div>
     </Banner>
-  );
-};
+  )
+}

@@ -16,6 +16,7 @@ export const CurationMap = () => {
     fetchNextPage,
     hasNextPage,
   } = useGetCuration()
+
   const { target } = useInfinityQueryObserver({
     threshold: 0.1,
     fetchNextPage: fetchNextPage,
@@ -133,7 +134,7 @@ export const CurationMap = () => {
             )),
           )}
       </div>
-      <div ref={target} className="h-10"></div>
+      <div ref={target} className=""></div>
     </main>
   )
 }
