@@ -19,6 +19,8 @@ import { Route as CurationMapsImport } from './routes/curation-maps'
 import { Route as CurationDetailImport } from './routes/curation-detail'
 import { Route as CurationCreateImport } from './routes/curation-create'
 import { Route as IndexImport } from './routes/index'
+import { Route as LoginOauth2CodeImport } from './routes/login/oauth2/code'
+import { Route as LoginOauth2CodeGoogleImport } from './routes/login/oauth2/code/google'
 
 // Create/Update Routes
 
@@ -60,6 +62,16 @@ const CurationCreateRoute = CurationCreateImport.update({
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const LoginOauth2CodeRoute = LoginOauth2CodeImport.update({
+  path: '/oauth2/code',
+  getParentRoute: () => LoginRoute,
+} as any)
+
+const LoginOauth2CodeGoogleRoute = LoginOauth2CodeGoogleImport.update({
+  path: '/google',
+  getParentRoute: () => LoginOauth2CodeRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -122,6 +134,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SigninImport
       parentRoute: typeof rootRoute
     }
+    '/login/oauth2/code': {
+      id: '/login/oauth2/code'
+      path: '/oauth2/code'
+      fullPath: '/login/oauth2/code'
+      preLoaderRoute: typeof LoginOauth2CodeImport
+      parentRoute: typeof LoginImport
+    }
+    '/login/oauth2/code/google': {
+      id: '/login/oauth2/code/google'
+      path: '/google'
+      fullPath: '/login/oauth2/code/google'
+      preLoaderRoute: typeof LoginOauth2CodeGoogleImport
+      parentRoute: typeof LoginOauth2CodeImport
+    }
   }
 }
 
@@ -133,7 +159,11 @@ export const routeTree = rootRoute.addChildren({
   CurationDetailRoute,
   CurationMapsRoute,
   CurationSelectRoute,
-  LoginRoute,
+  LoginRoute: LoginRoute.addChildren({
+    LoginOauth2CodeRoute: LoginOauth2CodeRoute.addChildren({
+      LoginOauth2CodeGoogleRoute,
+    }),
+  }),
   MypageRoute,
   SigninRoute,
 })
@@ -172,13 +202,27 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "curation-select.tsx"
     },
     "/login": {
-      "filePath": "login.tsx"
+      "filePath": "login.tsx",
+      "children": [
+        "/login/oauth2/code"
+      ]
     },
     "/mypage": {
       "filePath": "mypage.tsx"
     },
     "/signin": {
       "filePath": "signin.tsx"
+    },
+    "/login/oauth2/code": {
+      "filePath": "login/oauth2/code.tsx",
+      "parent": "/login",
+      "children": [
+        "/login/oauth2/code/google"
+      ]
+    },
+    "/login/oauth2/code/google": {
+      "filePath": "login/oauth2/code/google.tsx",
+      "parent": "/login/oauth2/code"
     }
   }
 }
