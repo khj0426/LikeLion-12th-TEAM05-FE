@@ -23,7 +23,7 @@ export const LoginBanner = () => {
             size="xs"
             onClick={() => {
               window.location.href =
-                'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=279343714696-d5f6vfgjl73t3rj8oinvnghkub63h4v1.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Flogin&response_type=code&scope=email%20profile&service=lso&o2v=2&ddm=0&flowName=GeneralOAuthFlow'
+                'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=279343714696-d5f6vfgjl73t3rj8oinvnghkub63h4v1.apps.googleusercontent.com&redirect_uri=https://like-lion-12th-team-05-fe.vercel.app/login&response_type=code&scope=email%20profile&service=lso&o2v=2&ddm=0&flowName=GeneralOAuthFlow'
             }}
           >
             구글로 로그인
