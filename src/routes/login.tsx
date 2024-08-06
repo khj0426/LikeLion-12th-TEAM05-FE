@@ -13,7 +13,7 @@ export const Route = createFileRoute('/login')({
       console.log(code)
     }, [typeof window !== 'undefined' && code])
 
-    const handleSubmit = async (formData) => {
+    const handleSubmit = async () => {
       // 로그인 처리 로직
 
       // 만약 code가 존재하면 백엔드로 전송
@@ -22,7 +22,7 @@ export const Route = createFileRoute('/login')({
           const response = await fetch(
             'http://your-backend-url/api/auth/google',
             {
-              method: 'GET',
+              method: '',
               headers: {
                 'Content-Type': 'application/json',
               },
