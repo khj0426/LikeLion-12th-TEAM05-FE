@@ -43,7 +43,6 @@ export const Route = createFileRoute('/curation-detail')({
     })
     const { name } = useContext(UserContext)
     const [_map, setMap] = useState<any>()
-    const [detailMap, setDetailMap] = useState<any>()
     const [comment, setComment] = useState('')
     const { mutate: createComment } = useCreateComment()
     const { data: comments, refetch: refetchComments } = useGetComments({
